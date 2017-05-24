@@ -4,6 +4,8 @@ import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
 import main.java.com.chess.engine.board.BoardUtil;
 import main.java.com.chess.engine.board.Move;
+import main.java.com.chess.engine.board.Move.MajorAttackMove;
+import main.java.com.chess.engine.board.Move.MajorMove;
 import main.java.com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -31,22 +33,24 @@ public class Bishop extends Piece {
 
             while (BoardUtil.isValidTileCoordinate(candidateDestinationCoordinate)){
 
-                if(isFirstColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset) || isEightColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset)){
+                if(isFirstColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset) ||
+                        isEightColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset)){
+                    System.out.println("cot cam: "+ candidateDestinationCoordinate);
                     break;
                 }
 
                 candidateDestinationCoordinate += candidateCoordinateOffset;
-
-                if (BoardUtil.isValidTileCoordinate(candidateDestinationCoordinate)){
+                if (BoardUtil.isValidTileCoordinate(candidateDestinationCoordinate)) {
                     final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (! candidateDestinationTile.isTileOccupied()){
-                        legalMoves.add(new Move.MajorMove(board,this,candidateDestinationCoordinate));
-                    }else {
-                        final Piece pieceDestination = candidateDestinationTile.getPeice();
-                        final Alliance peiceAlliance = pieceDestination.getPeiceAlliance();
-
-                        if (this.peiceAlliance != peiceAlliance){
-                            legalMoves.add(new Move.MajorAttackMove(board,this,candidateDestinationCoordinate, pieceDestination));
+                    if (!candidateDestinationTile.isTileOccupied()) {
+                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                    }
+                    else {
+                        final Piece pieceAtDestination = candidateDestinationTile.getPeice();
+                        final Alliance pieceAlliance = pieceAtDestination.getPeiceAlliance();
+                        if (this.peiceAlliance != pieceAlliance) {
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,
+                                    pieceAtDestination));
                         }
                         break;
                     }
@@ -65,7 +69,7 @@ public class Bishop extends Piece {
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtil.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 && candidateOffset == 7);
+        return BoardUtil.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || candidateOffset == 7);
     }
 
     @Override
@@ -74,7 +78,7 @@ public class Bishop extends Piece {
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtil.EIGHT_COLUMN[currentPosition] && (candidateOffset == -7 && candidateOffset == 9);
+        return BoardUtil.EIGHT_COLUMN[currentPosition] && (candidateOffset == -7 || candidateOffset == 9);
     }
 
 }
