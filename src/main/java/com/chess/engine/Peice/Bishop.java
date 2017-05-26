@@ -35,7 +35,6 @@ public class Bishop extends Piece {
 
                 if(isFirstColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset) ||
                         isEightColumnExclusion(candidateDestinationCoordinate,candidateCoordinateOffset)){
-                    System.out.println("cot cam: "+ candidateDestinationCoordinate);
                     break;
                 }
 

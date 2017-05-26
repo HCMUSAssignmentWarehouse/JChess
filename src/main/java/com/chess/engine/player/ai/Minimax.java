@@ -10,8 +10,11 @@ import main.java.com.chess.engine.player.MoveTransition;
 public class Minimax implements MoveStrategy {
 
     private final BoardEvaluator boardEvaluator;
+    private final int searchDepth;
+    private long boardsEvaluated;
 
-    public Minimax(){
+    public Minimax(final int searchDepth){
+        this.searchDepth = searchDepth;
         this.boardEvaluator = new StandardBoardEvaluator();
     }
 
@@ -34,7 +37,7 @@ public class Minimax implements MoveStrategy {
             if (transition.getMoveStatus().isDone()){
                 currentValue = board.getCurrentPlayer().getAlliance().isWhite()?
                         min(transition.getTransitionBoard(),depth - 1):
-                        max(transition.getTransitionBoard(), depth - 1);
+                        max(transition.getTransitionBoard(),depth - 1);
 
                 if (board.getCurrentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue){
                     highestSeenValue = currentValue;
@@ -48,7 +51,7 @@ public class Minimax implements MoveStrategy {
 
         final long executeTime = System.currentTimeMillis() - startTime;
 
-        return null;
+        return bestMove;
     }
 
     public int min(final Board board,final int depth){

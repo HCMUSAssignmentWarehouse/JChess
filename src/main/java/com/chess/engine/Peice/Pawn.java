@@ -50,7 +50,6 @@ public class Pawn extends Piece {
                     legalMoves.add(new PawnMove(board,this,candidateDestinationCoordinate));
                 }
                 if (peicePosition == 52){
-                    System.out.print("ne: " +candidateDestinationCoordinate+"\t");
                 }
             }else if (currentCandidateOffset == 16 && this.isFirstMove() &&(
                     (BoardUtil.SEVENTH_RANK[peicePosition] && this.getPeiceAlliance().isBlack() )||

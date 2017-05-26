@@ -62,7 +62,6 @@ public class GameHistoryPanel extends JPanel {
         vertical.setValue(vertical.getMaximum());
 
     }
-
     private static String calculateCheckAndCheckMateHash(final Board board) {
         if(board.getCurrentPlayer().isInCheckMate()) {
             return "#";
