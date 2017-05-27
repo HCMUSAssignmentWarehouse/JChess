@@ -1,7 +1,7 @@
 package main.java.com.chess.gui;
 
 import main.java.com.chess.engine.board.Move;
-import main.java.com.chess.engine.Peice.Piece;
+import main.java.com.chess.engine.piece.Piece;
 import main.java.com.chess.gui.Table.MoveLog;
 import com.google.common.primitives.Ints;
 
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by MyPC on 5/17/2017.
  */
-public class TakenPeicePanel extends JPanel{
+public class TakenPiecePanel extends JPanel{
 
     private final JPanel northPanel;
     private final JPanel southPanel;
@@ -28,7 +28,7 @@ public class TakenPeicePanel extends JPanel{
     private static final Dimension TAKEN_PIECES_PANEL_DIMENSION = new Dimension(40, 80);
     private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
 
-    public TakenPeicePanel() {
+    public TakenPiecePanel() {
         super(new BorderLayout());
         setBackground(Color.decode("0xFDF5E6"));
         setBorder(PANEL_BORDER);
@@ -51,9 +51,9 @@ public class TakenPeicePanel extends JPanel{
         for(final Move move : moveLog.getMoves()) {
             if(move.isAttack()) {
                 final Piece takenPiece = move.getAttackedPiece();
-                if(takenPiece.getPeiceAlliance().isWhite()) {
+                if(takenPiece.getPieceAlliance().isWhite()) {
                     whiteTakenPieces.add(takenPiece);
-                } else if(takenPiece.getPeiceAlliance().isBlack()){
+                } else if(takenPiece.getPieceAlliance().isBlack()){
                     blackTakenPieces.add(takenPiece);
                 } else {
                     throw new RuntimeException("Should not reach here!");
@@ -64,14 +64,14 @@ public class TakenPeicePanel extends JPanel{
         Collections.sort(whiteTakenPieces, new Comparator<Piece>() {
             @Override
             public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPeiceValue(), p2.getPeiceValue());
+                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
             }
         });
 
         Collections.sort(blackTakenPieces, new Comparator<Piece>() {
             @Override
             public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPeiceValue(), p2.getPeiceValue());
+                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
             }
         });
 
@@ -79,7 +79,7 @@ public class TakenPeicePanel extends JPanel{
         for (final Piece takenPiece : whiteTakenPieces) {
             try {
                 final BufferedImage image = ImageIO.read(new File("icon/"
-                        + takenPiece.getPeiceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()
+                        + takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()
                         + ".gif"));
 
                 final ImageIcon ic = new ImageIcon(image);
@@ -95,7 +95,7 @@ public class TakenPeicePanel extends JPanel{
         for (final Piece takenPiece : blackTakenPieces) {
             try {
                 final BufferedImage image = ImageIO.read(new File("icon/"
-                        + takenPiece.getPeiceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()
+                        + takenPiece.getPieceAlliance().toString().substring(0, 1) + "" + takenPiece.toString()
                         + ".gif"));
                 final ImageIcon ic = new ImageIcon(image);
                 final JLabel imageLabel = new JLabel(new ImageIcon(ic.getImage().getScaledInstance(

@@ -3,8 +3,8 @@ package main.java.com.chess.engine.player;
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
 import main.java.com.chess.engine.board.Move;
-import main.java.com.chess.engine.Peice.King;
-import main.java.com.chess.engine.Peice.Piece;
+import main.java.com.chess.engine.piece.King;
+import main.java.com.chess.engine.piece.Piece;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
@@ -26,13 +26,13 @@ public abstract class Player {
         this.board = board;
         this.playerKing = establishKing();
         this.legalMoves =  ImmutableList.copyOf(Iterables.concat(legalMoves,calculateKingCastles(legalMoves,opponentMoves)));
-        this.isInCheck = !Player.calculateAttracksOnTile(this.playerKing.getPeicePosition(),opponentMoves).isEmpty();
+        this.isInCheck = !Player.calculateAttracksOnTile(this.playerKing.getPiecePosition(),opponentMoves).isEmpty();
     }
 
-    protected static Collection<Move> calculateAttracksOnTile(Integer peicePosition, Collection<Move> opponentMoves) {
+    protected static Collection<Move> calculateAttracksOnTile(Integer piecePosition, Collection<Move> opponentMoves) {
         final List<Move> attrackMoves = new ArrayList<>();
         for (final Move move: opponentMoves){
-            if(peicePosition == move.getDestinationCoordinate()){
+            if(piecePosition == move.getDestinationCoordinate()){
                 attrackMoves.add(move);
             }
         }
@@ -45,8 +45,8 @@ public abstract class Player {
 
     private King establishKing(){
 
-        for (final Piece piece : getActivePeice()){
-            if (piece.getPeiceType().isKing()){
+        for (final Piece piece : getActivePiece()){
+            if (piece.getPieceType().isKing()){
                 return (King) piece;
             }
         }
@@ -96,7 +96,7 @@ public abstract class Player {
         }
 
         Board transitionBoard = move.execute();
-        final Collection<Move> kingAttracks = Player.calculateAttracksOnTile(transitionBoard.getCurrentPlayer().getOpponent().getPlayerKing().getPeicePosition(),
+        final Collection<Move> kingAttracks = Player.calculateAttracksOnTile(transitionBoard.getCurrentPlayer().getOpponent().getPlayerKing().getPiecePosition(),
                 transitionBoard.getCurrentPlayer().getLegalMoves());
 
         if (!kingAttracks.isEmpty()){
@@ -107,7 +107,7 @@ public abstract class Player {
         return new MoveTransition(transitionBoard,move,MoveStatus.DONE);
     }
 
-    public abstract Collection<Piece> getActivePeice();
+    public abstract Collection<Piece> getActivePiece();
     public abstract Alliance getAlliance();
     public abstract Player getOpponent();
     protected abstract Collection<Move>calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentLegals);

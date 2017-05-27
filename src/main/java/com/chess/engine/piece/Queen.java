@@ -1,9 +1,8 @@
-package main.java.com.chess.engine.Peice;
+package main.java.com.chess.engine.piece;
 
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
 import main.java.com.chess.engine.board.BoardUtil;
-
 import main.java.com.chess.engine.board.Move;
 import main.java.com.chess.engine.board.Move.MajorAttackMove;
 import main.java.com.chess.engine.board.Tile;
@@ -16,12 +15,18 @@ import java.util.List;
 /**
  * Created by MyPC on 5/10/2017.
  */
-public class Rook extends Piece {
+public class Queen extends Piece {
 
-    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-8,-1,1,8};
+    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9,-8,-7,-1,1,7,8,9};
+    private final boolean isFirstMove;
+    public Queen(Alliance pieceAlliance, int piecePosition) {
+        super(PieceType.QUEEN,piecePosition, pieceAlliance);
+        this.isFirstMove = true;
+    }
+    public Queen(Alliance pieceAlliance, int piecePosition, boolean isFirstMove) {
 
-    public Rook(Alliance peiceAlliance, int peicePosition) {
-        super(PeiceType.ROOK,peicePosition, peiceAlliance);
+        super(PieceType.QUEEN,piecePosition, pieceAlliance);
+        this.isFirstMove = isFirstMove;
     }
 
     @Override
@@ -30,7 +35,7 @@ public class Rook extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int candidateCoordinateOffset: CANDIDATE_MOVE_VECTOR_COORDINATES){
-            int candidateDestinationCoordinate = this.peicePosition;
+            int candidateDestinationCoordinate = this.piecePosition;
 
             while (BoardUtil.isValidTileCoordinate(candidateDestinationCoordinate)){
 
@@ -45,10 +50,10 @@ public class Rook extends Piece {
                     if (! candidateDestinationTile.isTileOccupied()){
                         legalMoves.add(new Move.MajorMove(board,this,candidateDestinationCoordinate));
                     }else {
-                        final Piece pieceDestination = candidateDestinationTile.getPeice();
-                        final Alliance peiceAlliance = pieceDestination.getPeiceAlliance();
+                        final Piece pieceDestination = candidateDestinationTile.getPiece();
+                        final Alliance pieceAlliance = pieceDestination.getPieceAlliance();
 
-                        if (this.peiceAlliance != peiceAlliance){
+                        if (this.pieceAlliance != pieceAlliance){
                             legalMoves.add(new MajorAttackMove(board,this,candidateDestinationCoordinate, pieceDestination));
                         }
                         break;
@@ -63,20 +68,21 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Rook movePeice(final Move move) {
-        return new Rook(move.getMovedPiece().getPeiceAlliance(),move.getDestinationCoordinate());
+    public Queen movePiece(final Move move) {
+        return new Queen(move.getMovedPiece().getPieceAlliance(),move.getDestinationCoordinate());
     }
+
 
     @Override
     public String toString() {
-        return PeiceType.ROOK.toString();
+        return PieceType.QUEEN.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtil.FIRST_COLUMN[currentPosition] && (candidateOffset == -1);
+        return BoardUtil.FIRST_COLUMN[currentPosition] && (candidateOffset == -1 || candidateOffset == -9 || candidateOffset == 7);
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset){
-        return BoardUtil.EIGHT_COLUMN[currentPosition] && (candidateOffset == 1);
+        return BoardUtil.EIGHT_COLUMN[currentPosition] && (candidateOffset == -7 || candidateOffset == 1 ||candidateOffset == 9);
     }
 }

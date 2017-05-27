@@ -1,7 +1,7 @@
 package main.java.com.chess.engine.board;
 
 import main.java.com.chess.engine.Alliance;
-import main.java.com.chess.engine.Peice.*;
+import main.java.com.chess.engine.piece.*;
 import main.java.com.chess.engine.player.BlackPlayer;
 import main.java.com.chess.engine.player.Player;
 import main.java.com.chess.engine.player.WhitePlayer;
@@ -13,8 +13,8 @@ import java.util.*;
 /**
  * Created by MyPC on 5/9/2017.
  */
-public class Board {
 
+public class Board {
     private final List<Tile> gameBoard;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
@@ -26,8 +26,8 @@ public class Board {
 
     private Board(Builder builder){
         this.gameBoard = createGameBoard(builder);
-        this.whitePieces = calculateActivePeices(this.gameBoard,Alliance.WHITE);
-        this.blackPieces = calculateActivePeices(this.gameBoard,Alliance.BLACK);
+        this.whitePieces = calculateActivePieces(this.gameBoard,Alliance.WHITE);
+        this.blackPieces = calculateActivePieces(this.gameBoard,Alliance.BLACK);
         this.enPassantPawn = builder.enPassantPawn;
         final Collection<Move> whiteStandardLegalMoves = calculateLegalMove(this.whitePieces);
         final Collection<Move> blackStandardLegalMoves = calculateLegalMove(this.blackPieces);
@@ -86,12 +86,12 @@ public class Board {
         return ImmutableList.copyOf(legalMoves);
     }
 
-    private Collection<Piece> calculateActivePeices(final List<Tile> gameBoard, final Alliance alliance) {
+    private Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
         for(final Tile tile: gameBoard){
             if (tile.isTileOccupied()){
-                final Piece piece = tile.getPeice();
-                if (piece.getPeiceAlliance() == alliance){
+                final Piece piece = tile.getPiece();
+                if (piece.getPieceAlliance() == alliance){
                     activePieces.add(piece);
                 }
             }
@@ -111,40 +111,40 @@ public class Board {
 
     public static Board createStandardBoard(){
         final Builder builder= new Builder();
-        builder.setPeice(new Rook(Alliance.BLACK,0));
-        builder.setPeice(new Knight(Alliance.BLACK,1));
-        builder.setPeice(new Bishop(Alliance.BLACK,2));
-        builder.setPeice(new Queen(Alliance.BLACK,3));
-        builder.setPeice(new King(Alliance.BLACK,4));
-        builder.setPeice(new Bishop(Alliance.BLACK,5));
-        builder.setPeice(new Knight(Alliance.BLACK,6));
-        builder.setPeice(new Rook(Alliance.BLACK,7));
-        builder.setPeice(new Pawn(Alliance.BLACK,8));
-        builder.setPeice(new Pawn(Alliance.BLACK,9));
-        builder.setPeice(new Pawn(Alliance.BLACK,10));
-        builder.setPeice(new Pawn(Alliance.BLACK,11));
-        builder.setPeice(new Pawn(Alliance.BLACK,12));
-        builder.setPeice(new Pawn(Alliance.BLACK,13));
-        builder.setPeice(new Pawn(Alliance.BLACK,14));
-        builder.setPeice(new Pawn(Alliance.BLACK,15));
+        builder.setPiece(new Rook(Alliance.BLACK,0));
+        builder.setPiece(new Knight(Alliance.BLACK,1));
+        builder.setPiece(new Bishop(Alliance.BLACK,2));
+        builder.setPiece(new Queen(Alliance.BLACK,3));
+        builder.setPiece(new King(Alliance.BLACK,4));
+        builder.setPiece(new Bishop(Alliance.BLACK,5));
+        builder.setPiece(new Knight(Alliance.BLACK,6));
+        builder.setPiece(new Rook(Alliance.BLACK,7));
+        builder.setPiece(new Pawn(Alliance.BLACK,8));
+        builder.setPiece(new Pawn(Alliance.BLACK,9));
+        builder.setPiece(new Pawn(Alliance.BLACK,10));
+        builder.setPiece(new Pawn(Alliance.BLACK,11));
+        builder.setPiece(new Pawn(Alliance.BLACK,12));
+        builder.setPiece(new Pawn(Alliance.BLACK,13));
+        builder.setPiece(new Pawn(Alliance.BLACK,14));
+        builder.setPiece(new Pawn(Alliance.BLACK,15));
 
 
-        builder.setPeice(new Pawn(Alliance.WHITE,48));
-        builder.setPeice(new Pawn(Alliance.WHITE,49));
-        builder.setPeice(new Pawn(Alliance.WHITE,50));
-        builder.setPeice(new Pawn(Alliance.WHITE,51));
-        builder.setPeice(new Pawn(Alliance.WHITE,52));
-        builder.setPeice(new Pawn(Alliance.WHITE,53));
-        builder.setPeice(new Pawn(Alliance.WHITE,54));
-        builder.setPeice(new Pawn(Alliance.WHITE,55));
-        builder.setPeice(new Rook(Alliance.WHITE,56));
-        builder.setPeice(new Knight(Alliance.WHITE,57));
-        builder.setPeice(new Bishop(Alliance.WHITE,58));
-        builder.setPeice(new Queen(Alliance.WHITE,59));
-        builder.setPeice(new King(Alliance.WHITE,60));
-        builder.setPeice(new Bishop(Alliance.WHITE,61));
-        builder.setPeice(new Knight(Alliance.WHITE,62));
-        builder.setPeice(new Rook(Alliance.WHITE,63));
+        builder.setPiece(new Pawn(Alliance.WHITE,48));
+        builder.setPiece(new Pawn(Alliance.WHITE,49));
+        builder.setPiece(new Pawn(Alliance.WHITE,50));
+        builder.setPiece(new Pawn(Alliance.WHITE,51));
+        builder.setPiece(new Pawn(Alliance.WHITE,52));
+        builder.setPiece(new Pawn(Alliance.WHITE,53));
+        builder.setPiece(new Pawn(Alliance.WHITE,54));
+        builder.setPiece(new Pawn(Alliance.WHITE,55));
+        builder.setPiece(new Rook(Alliance.WHITE,56));
+        builder.setPiece(new Knight(Alliance.WHITE,57));
+        builder.setPiece(new Bishop(Alliance.WHITE,58));
+        builder.setPiece(new Queen(Alliance.WHITE,59));
+        builder.setPiece(new King(Alliance.WHITE,60));
+        builder.setPiece(new Bishop(Alliance.WHITE,61));
+        builder.setPiece(new Knight(Alliance.WHITE,62));
+        builder.setPiece(new Rook(Alliance.WHITE,63));
 
         builder.setMoveMaker(Alliance.WHITE);
         return builder.build();
@@ -170,8 +170,8 @@ public class Board {
             this.boardConfig = new HashMap<>();
         }
 
-        public Builder setPeice(final Piece piece){
-            this.boardConfig.put(piece.getPeicePosition(), piece);
+        public Builder setPiece(final Piece piece){
+            this.boardConfig.put(piece.getPiecePosition(), piece);
             return this;
         }
 

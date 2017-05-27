@@ -1,4 +1,4 @@
-package main.java.com.chess.engine.Peice;
+package main.java.com.chess.engine.piece;
 
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
@@ -11,51 +11,51 @@ import java.util.Collection;
  */
 public abstract class Piece {
 
-    protected final PeiceType peiceType;
-    protected final int peicePosition;
-    protected final Alliance peiceAlliance;
+    protected final PieceType pieceType;
+    protected final int piecePosition;
+    protected final Alliance pieceAlliance;
     protected final boolean isFirstMove;
     private final int cacheHashCode;
 
-    Piece(final PeiceType peiceType, final int peicePosition, final Alliance peiceAlliance){
-        this.peiceType = peiceType;
-        this.peiceAlliance = peiceAlliance;
-        this.peicePosition = peicePosition;
+    Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance){
+        this.pieceType = pieceType;
+        this.pieceAlliance = pieceAlliance;
+        this.piecePosition = piecePosition;
         this.isFirstMove = true;
         this.cacheHashCode = computeHashCode();
     }
 
     private int computeHashCode() {
 
-        int result = peiceType.hashCode();
-        result = 31 * result + peiceAlliance.hashCode();
-        result = 31 * result + peicePosition;
+        int result = pieceType.hashCode();
+        result = 31 * result + pieceAlliance.hashCode();
+        result = 31 * result + piecePosition;
         result = 31 * result + (isFirstMove ? 1: 0);
 
         return result;
     }
 
-    public PeiceType getPeiceType() {
-        return this.peiceType;
+    public PieceType getPieceType() {
+        return this.pieceType;
     }
 
     public boolean isFirstMove(){
         return this.isFirstMove;
     }
 
-    public Alliance getPeiceAlliance(){
-        return this.peiceAlliance;
+    public Alliance getPieceAlliance(){
+        return this.pieceAlliance;
     }
     public abstract Collection<Move> calculateLegalMove(final Board board);
 
-    public abstract Piece movePeice(Move move);
+    public abstract Piece movePiece(Move move);
 
-    public Integer getPeicePosition() {
-        return peicePosition;
+    public Integer getPiecePosition() {
+        return piecePosition;
     }
 
-    public int getPeiceValue(){
-        return this.peiceType.getPeiceValue();
+    public int getPieceValue(){
+        return this.pieceType.getPieceValue();
     }
 
     @Override
@@ -68,8 +68,8 @@ public abstract class Piece {
         }
 
         final Piece otherPiece = (Piece)obj;
-        return peicePosition == otherPiece.getPeicePosition() && peiceType == otherPiece.getPeiceType()
-                && peiceAlliance == otherPiece.getPeiceAlliance() && isFirstMove == otherPiece.isFirstMove();
+        return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType()
+                && pieceAlliance == otherPiece.getPieceAlliance() && isFirstMove == otherPiece.isFirstMove();
 
     }
 
@@ -79,7 +79,7 @@ public abstract class Piece {
         return this.cacheHashCode;
     }
 
-    public enum PeiceType{
+    public enum PieceType{
         PAWN("P",100) {
             @Override
             public boolean isKing() {
@@ -147,23 +147,23 @@ public abstract class Piece {
             }
         };
 
-        private String peiceName;
-        private int peiceValue;
+        private String pieceName;
+        private int pieceValue;
 
-        PeiceType(final String peiceName,  final int peiceValue){
-            this.peiceName = peiceName;
-            this.peiceValue = peiceValue;
+        PieceType(final String pieceName,  final int pieceValue){
+            this.pieceName = pieceName;
+            this.pieceValue = pieceValue;
         }
 
 
-        public int getPeiceValue(){
-            return this.peiceValue;
+        public int getPieceValue(){
+            return this.pieceValue;
         }
         public abstract boolean isKing();
         public abstract boolean isRook();
         @Override
         public String toString() {
-            return this.peiceName;
+            return this.pieceName;
         }
 
 

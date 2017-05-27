@@ -1,7 +1,7 @@
 package main.java.com.chess.engine.board;
 
 
-import main.java.com.chess.engine.Peice.Piece;
+import main.java.com.chess.engine.piece.Piece;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public abstract class Tile {
     }
 
     public abstract boolean isTileOccupied();
-    public abstract Piece getPeice();
+    public abstract Piece getPiece();
 
     public static final class EmptyTile extends Tile{
 
@@ -55,7 +55,7 @@ public abstract class Tile {
         }
 
         @Override
-        public Piece getPeice() {
+        public Piece getPiece() {
             return null;
         }
     }
@@ -71,7 +71,7 @@ public abstract class Tile {
 
         @Override
         public String toString(){
-            return getPeice().getPeiceAlliance().isBlack() ? getPeice().toString().toLowerCase(): getPeice().toString();
+            return getPiece().getPieceAlliance().isBlack() ? getPiece().toString().toLowerCase(): getPiece().toString();
         }
 
         @Override
@@ -80,7 +80,7 @@ public abstract class Tile {
         }
 
         @Override
-        public Piece getPeice() {
+        public Piece getPiece() {
             return pieceOnTile;
         }
     }

@@ -1,4 +1,4 @@
-package main.java.com.chess.engine.Peice;
+package main.java.com.chess.engine.piece;
 
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
@@ -21,8 +21,8 @@ public class King extends Piece {
     private final static int[] CANDIDATE_MOVE_COORDINATE = {-9,-8,-7,-1,1,7,8,9};
 
 
-    public King(final Alliance peiceAlliance,final int peicePosition) {
-        super(PeiceType.KING,peicePosition, peiceAlliance);
+    public King(final Alliance pieceAlliance,final int piecePosition) {
+        super(PieceType.KING,piecePosition, pieceAlliance);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class King extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int currentCandidateOffset: CANDIDATE_MOVE_COORDINATE){
-            final int candidateDestinationCoordinate = this.peicePosition + currentCandidateOffset;
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
 
-            if (isFirstColumnExclusion(this.peicePosition,currentCandidateOffset) || isEightColumnExclusion(this.peicePosition,currentCandidateOffset)){
+            if (isFirstColumnExclusion(this.piecePosition,currentCandidateOffset) || isEightColumnExclusion(this.piecePosition,currentCandidateOffset)){
                 continue;
             }
 
@@ -41,10 +41,10 @@ public class King extends Piece {
                 if (! candidateDestinationTile.isTileOccupied()){
                     legalMoves.add(new MajorMove(board,this,candidateDestinationCoordinate));
                 }else {
-                    final Piece pieceDestination = candidateDestinationTile.getPeice();
-                    final Alliance peiceAlliance = pieceDestination.getPeiceAlliance();
+                    final Piece pieceDestination = candidateDestinationTile.getPiece();
+                    final Alliance pieceAlliance = pieceDestination.getPieceAlliance();
 
-                    if (this.peiceAlliance != peiceAlliance){
+                    if (this.pieceAlliance != pieceAlliance){
                         legalMoves.add(new MajorAttackMove(board,this,candidateDestinationCoordinate, pieceDestination));
                     }
                 }
@@ -56,7 +56,7 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return PeiceType.KING.toString();
+        return PieceType.KING.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
@@ -65,8 +65,8 @@ public class King extends Piece {
     }
 
     @Override
-    public King movePeice(final Move move) {
-        return new King(move.getMovedPiece().getPeiceAlliance(),move.getDestinationCoordinate());
+    public King movePiece(final Move move) {
+        return new King(move.getMovedPiece().getPieceAlliance(),move.getDestinationCoordinate());
     }
 
 

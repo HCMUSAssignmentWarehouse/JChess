@@ -1,11 +1,10 @@
 package main.java.com.chess.gui;
 
-import javafx.scene.control.Tab;
 import main.java.com.chess.engine.board.Board;
 import main.java.com.chess.engine.board.BoardUtil;
 import main.java.com.chess.engine.board.Move;
 import main.java.com.chess.engine.board.Tile;
-import main.java.com.chess.engine.Peice.Piece;
+import main.java.com.chess.engine.piece.Piece;
 import main.java.com.chess.engine.player.MoveTransition;
 import com.google.common.collect.Lists;
 import main.java.com.chess.engine.player.ai.Minimax;
@@ -41,7 +40,7 @@ public class Table extends Observable{
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean highLightLegalMoves;
-    private final TakenPeicePanel takenPiecesPanel;
+    private final TakenPiecePanel takenPiecesPanel;
     private final GameHistoryPanel gameHistoryPanel;
     private final MoveLog moveLog;
     private final GameSetup gameSetup;
@@ -52,7 +51,7 @@ public class Table extends Observable{
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(600, 600);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
-    private static String defaultPeiceImagesPath = "icon/";
+    private static String defaultPieceImagesPath = "icon/";
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
     private static final Table INSTANCE = new Table();
@@ -64,7 +63,7 @@ public class Table extends Observable{
         final JMenuBar tableMenuBar =  createTableMenuBar();
         this.gameFrame.setJMenuBar(tableMenuBar);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
-        this.takenPiecesPanel = new TakenPeicePanel();
+        this.takenPiecesPanel = new TakenPiecePanel();
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameHistoryPanel = new GameHistoryPanel();
         this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
@@ -182,7 +181,7 @@ public class Table extends Observable{
         return this.gameHistoryPanel;
     }
 
-    public TakenPeicePanel getTakenPiecesPanel() {
+    public TakenPiecePanel getTakenPiecesPanel() {
         return this.takenPiecesPanel;
     }
 
@@ -359,7 +358,7 @@ public class Table extends Observable{
             this.tileId = tileId;
             setPreferredSize(TILE_PANEL_DIMENSION);
             assignTileColor();
-            assignTilePeiceIcon(chessBoard);
+            assignTilePieceIcon(chessBoard);
 
             addMouseListener(new MouseListener() {
                 @Override
@@ -372,7 +371,7 @@ public class Table extends Observable{
                     }else if (isLeftMouseButton(e)){
                         if (sourceTile == null){
                             sourceTile = chessBoard.getTile(tileId);
-                            humanMovedPiece = sourceTile.getPeice();
+                            humanMovedPiece = sourceTile.getPiece();
                             if (humanMovedPiece == null){
                                 sourceTile = null;
                             }
@@ -434,7 +433,7 @@ public class Table extends Observable{
 
         public void drawTile(final Board board){
             assignTileColor();
-            assignTilePeiceIcon(board);
+            assignTilePieceIcon(board);
             hightLightLegals(board);
             validate();
             repaint();
@@ -442,7 +441,7 @@ public class Table extends Observable{
 
         private void hightLightLegals(final Board board){
             if(highLightLegalMoves){
-                for (final Move move: peiceLegalMoves(board)){
+                for (final Move move: pieceLegalMoves(board)){
                     if (move.getDestinationCoordinate() == this.tileId){
                         try{
                             add(new JLabel(new ImageIcon(ImageIO.read(new File("green_dot.png")))));
@@ -454,18 +453,18 @@ public class Table extends Observable{
             }
         }
 
-        private Collection<Move> peiceLegalMoves(final Board board){
-            if (humanMovedPiece != null && humanMovedPiece.getPeiceAlliance() == board.getCurrentPlayer().getAlliance()){
+        private Collection<Move> pieceLegalMoves(final Board board){
+            if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.getCurrentPlayer().getAlliance()){
                 return humanMovedPiece.calculateLegalMove(board);
             }
             return Collections.emptyList();
         }
 
-        private void assignTilePeiceIcon(final Board board){
+        private void assignTilePieceIcon(final Board board){
             this.removeAll();
             if (board.getTile(this.tileId).isTileOccupied()){
                 try {
-                    final BufferedImage image = ImageIO.read(new File(defaultPeiceImagesPath + board.getTile(this.tileId).getPeice().getPeiceAlliance().toString().substring(0,1)+board.getTile(this.tileId).getPeice().toString()+".gif"));
+                    final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0,1)+board.getTile(this.tileId).getPiece().toString()+".gif"));
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {
                     e.printStackTrace();

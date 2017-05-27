@@ -1,4 +1,4 @@
-package main.java.com.chess.engine.Peice;
+package main.java.com.chess.engine.piece;
 
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
@@ -21,8 +21,8 @@ public class Knight extends Piece {
 
     private final static int[] CANDIDATE_MOVE_COORDINATE = {-17,-15,-10,-6,6,10,15,17};
 
-    public Knight(final Alliance peiceAlliance, final int peicePosition) {
-        super(PeiceType.KNIGHT,peicePosition, peiceAlliance);
+    public Knight(final Alliance pieceAlliance, final int piecePosition) {
+        super(PieceType.KNIGHT,piecePosition, pieceAlliance);
     }
 
     @Override
@@ -32,22 +32,22 @@ public class Knight extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int currentCandidateOffset: CANDIDATE_MOVE_COORDINATE){
-            final int candidateDestinateCoordidate = this.peicePosition + currentCandidateOffset;
+            final int candidateDestinateCoordidate = this.piecePosition + currentCandidateOffset;
 
             if (BoardUtil.isValidTileCoordinate(candidateDestinateCoordidate)){
 
-                if (isFirstColumnExclusion(this.peicePosition,currentCandidateOffset) || isSecondColumnExclusion(this.peicePosition,currentCandidateOffset)
-                        ||isSevenColumnExclusion(this.peicePosition,currentCandidateOffset)|| isEightColumnExclusion(this.peicePosition,currentCandidateOffset)){
+                if (isFirstColumnExclusion(this.piecePosition,currentCandidateOffset) || isSecondColumnExclusion(this.piecePosition,currentCandidateOffset)
+                        ||isSevenColumnExclusion(this.piecePosition,currentCandidateOffset)|| isEightColumnExclusion(this.piecePosition,currentCandidateOffset)){
                     continue;
                 }
                 final Tile candidateDestinationTile = board.getTile(candidateDestinateCoordidate);
                 if (! candidateDestinationTile.isTileOccupied()){
                     legalMoves.add(new MajorMove(board,this,candidateDestinateCoordidate));
                 }else {
-                    final Piece pieceDestination = candidateDestinationTile.getPeice();
-                    final Alliance peiceAlliance = pieceDestination.getPeiceAlliance();
+                    final Piece pieceDestination = candidateDestinationTile.getPiece();
+                    final Alliance pieceAlliance = pieceDestination.getPieceAlliance();
 
-                    if (this.peiceAlliance != peiceAlliance){
+                    if (this.pieceAlliance != pieceAlliance){
                         legalMoves.add(new MajorAttackMove(board,this,candidateDestinateCoordidate, pieceDestination));
                     }
                 }
@@ -58,13 +58,13 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Knight movePeice(final Move move) {
-        return new Knight(move.getMovedPiece().getPeiceAlliance(),move.getDestinationCoordinate());
+    public Knight movePiece(final Move move) {
+        return new Knight(move.getMovedPiece().getPieceAlliance(),move.getDestinationCoordinate());
     }
 
     @Override
     public String toString() {
-        return PeiceType.KNIGHT.toString();
+        return PieceType.KNIGHT.toString();
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){

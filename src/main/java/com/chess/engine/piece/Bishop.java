@@ -1,4 +1,4 @@
-package main.java.com.chess.engine.Peice;
+package main.java.com.chess.engine.piece;
 
 import main.java.com.chess.engine.Alliance;
 import main.java.com.chess.engine.board.Board;
@@ -19,8 +19,8 @@ import java.util.List;
 public class Bishop extends Piece {
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9,-7,7,9};
 
-    public Bishop(Alliance peiceAlliance, int peicePosition) {
-        super(PeiceType.BISHOP,peicePosition, peiceAlliance);
+    public Bishop(Alliance pieceAlliance, int piecePosition) {
+        super(PieceType.BISHOP,piecePosition, pieceAlliance);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Bishop extends Piece {
         final List<Move> legalMoves = new ArrayList<>();
 
         for (final int candidateCoordinateOffset: CANDIDATE_MOVE_VECTOR_COORDINATES){
-            int candidateDestinationCoordinate = this.peicePosition;
+            int candidateDestinationCoordinate = this.piecePosition;
 
             while (BoardUtil.isValidTileCoordinate(candidateDestinationCoordinate)){
 
@@ -45,9 +45,9 @@ public class Bishop extends Piece {
                         legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                     }
                     else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPeice();
-                        final Alliance pieceAlliance = pieceAtDestination.getPeiceAlliance();
-                        if (this.peiceAlliance != pieceAlliance) {
+                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
+                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
+                        if (this.pieceAlliance != pieceAlliance) {
                             legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate,
                                     pieceAtDestination));
                         }
@@ -63,8 +63,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Bishop movePeice(final Move move) {
-        return new Bishop(move.getMovedPiece().getPeiceAlliance(),move.getDestinationCoordinate());
+    public Bishop movePiece(final Move move) {
+        return new Bishop(move.getMovedPiece().getPieceAlliance(),move.getDestinationCoordinate());
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset){
@@ -73,7 +73,7 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return PeiceType.BISHOP.toString();
+        return PieceType.BISHOP.toString();
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset){

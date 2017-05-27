@@ -1,6 +1,6 @@
 package main.java.com.chess.engine.player.ai;
 
-import main.java.com.chess.engine.Peice.Piece;
+import main.java.com.chess.engine.piece.Piece;
 import main.java.com.chess.engine.board.Board;
 import main.java.com.chess.engine.player.Player;
 
@@ -46,8 +46,8 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
     private static int pieceValue(final Player player) {
         int pieceValueScore = 0;
-        for (final Piece piece: player.getActivePeice()){
-            pieceValueScore = piece.getPeiceValue();
+        for (final Piece piece: player.getActivePiece()){
+            pieceValueScore = piece.getPieceValue();
         }
         return pieceValueScore;
     }
