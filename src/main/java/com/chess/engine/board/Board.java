@@ -49,6 +49,15 @@ public class Board {
         }
         return stringBuilder.toString();
     }
+    
+    public List<String> getArrayCurrentPeice(){
+        List<String> result = new ArrayList<>();
+        for (int i = 0 ; i < BoardUtil.NUM_TILES ; i++){
+            final String tileText = this.gameBoard.get(i).toString();
+            result.add(String.format("%3s",tileText));
+        }
+        return result;
+    }
 
     public Pawn getEnPassantPawn() {
         return this.enPassantPawn;
