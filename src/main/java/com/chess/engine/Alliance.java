@@ -36,7 +36,7 @@ public enum Alliance {
         }
 
         @Override
-        public Player choosePlayer(final WhitePlayer whitePlayer,final BlackPlayer blackPlayer) {
+        public Player choosePlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
             return whitePlayer;
         }
     },
@@ -73,9 +73,14 @@ public enum Alliance {
     };
 
     public abstract int getOppositeDirection();
+
     public abstract int getDirection();
+
     public abstract boolean isBlack();
+
     public abstract boolean isWhite();
+
     public abstract boolean isPawnPromotionSquare(final int position);
+
     public abstract Player choosePlayer(WhitePlayer whitePlayer, BlackPlayer blackPlayer);
 }

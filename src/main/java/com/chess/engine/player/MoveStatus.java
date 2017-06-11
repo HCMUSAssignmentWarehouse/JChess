@@ -3,7 +3,7 @@ package main.java.com.chess.engine.player;
 /**
  * Created by MyPC on 5/12/2017.
  */
-public enum  MoveStatus {
+public enum MoveStatus {
     DONE {
         @Override
         public boolean isDone() {
@@ -22,5 +22,6 @@ public enum  MoveStatus {
             return false;
         }
     };
+
     public abstract boolean isDone();
 }

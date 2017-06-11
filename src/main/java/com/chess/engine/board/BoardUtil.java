@@ -11,12 +11,15 @@ import java.util.Map;
  * Created by MyPC on 5/17/2017.
  */
 public class BoardUtil {
-    public static final  boolean[] FIRST_COLUMN = initColumn(0);
+    public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
+    public static final int START_TILE_INDEX = 0;
+    public static final int NUM_TILES = 64;
+    public static final int NUM_TILES_PER_ROW = 8;
+    public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
     public static final boolean[] SEVEN_COLUMN = initColumn(6);
     public static final boolean[] EIGHT_COLUMN = initColumn(7);
-
-    public static final boolean[] EIGHTH_RANK =  initRow(0);
+    public static final boolean[] EIGHTH_RANK = initRow(0);
     public static final boolean[] SEVENTH_RANK = initRow(8);
     public static final boolean[] SIXTH_RANK = initRow(16);
     public static final boolean[] FIFTH_RANK = initRow(24);
@@ -24,41 +27,29 @@ public class BoardUtil {
     public static final boolean[] THIRD_RANK = initRow(40);
     public static final boolean[] SECOND_RANK = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
-
-    public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     public final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
-    public static final int START_TILE_INDEX = 0;
+    private BoardUtil() {
+        throw new RuntimeException("You cannot instantiate me!");
+    }
 
     private static boolean[] initRow(int rowNumber) {
         final boolean[] row = new boolean[NUM_TILES];
-        do{
+        do {
             row[rowNumber] = true;
-            rowNumber ++;
-        }while (rowNumber % NUM_TILES_PER_ROW != 0);
+            rowNumber++;
+        } while (rowNumber % NUM_TILES_PER_ROW != 0);
         return row;
     }
-
-    public static final int NUM_TILES = 64;
-    public static final int NUM_TILES_PER_ROW  = 8;
 
     private static boolean[] initColumn(int i) {
 
         final boolean[] column = new boolean[NUM_TILES];
-        do{
+        do {
             column[i] = true;
-            i+= NUM_TILES_PER_ROW;
-        }while (i < NUM_TILES);
+            i += NUM_TILES_PER_ROW;
+        } while (i < NUM_TILES);
 
         return column;
-    }
-
-
-    private Map<String, Integer> initializePositionToCoordinateMap() {
-        final Map<String, Integer> positionToCoordinate = new HashMap<>();
-        for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
-            positionToCoordinate.put(ALGEBRAIC_NOTATION.get(i), i);
-        }
-        return ImmutableMap.copyOf(positionToCoordinate);
     }
 
     private static List<String> initializeAlgebraicNotation() {
@@ -74,20 +65,23 @@ public class BoardUtil {
         });
     }
 
-
-    private BoardUtil(){
-        throw new RuntimeException("You cannot instantiate me!");
-    }
-
     public static boolean isValidTileCoordinate(final int coordidate) {
         return coordidate >= 0 && coordidate < NUM_TILES;
     }
 
-    public int getCoordinateAtPosition(final String position) {
-        return POSITION_TO_COORDINATE.get(position);
-    }
-
     public static String getPositionAtCoordinate(final int coordinate) {
         return ALGEBRAIC_NOTATION.get(coordinate);
+    }
+
+    private Map<String, Integer> initializePositionToCoordinateMap() {
+        final Map<String, Integer> positionToCoordinate = new HashMap<>();
+        for (int i = START_TILE_INDEX; i < NUM_TILES; i++) {
+            positionToCoordinate.put(ALGEBRAIC_NOTATION.get(i), i);
+        }
+        return ImmutableMap.copyOf(positionToCoordinate);
+    }
+
+    public int getCoordinateAtPosition(final String position) {
+        return POSITION_TO_COORDINATE.get(position);
     }
 }
