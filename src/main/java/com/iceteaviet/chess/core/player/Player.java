@@ -86,7 +86,7 @@ public abstract class Player {
     }
 
     public boolean isCastled() {
-        //TODO: Update king to get is castled info
+        //TODO: Update king to getInstance is castled info
         return false;
     }
 
@@ -101,11 +101,15 @@ public abstract class Player {
                 transitionBoard.getCurrentPlayer().getLegalMoves());
 
         if (!kingAttracks.isEmpty()) {
-            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+            return new MoveTransition(this.board ,move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
         }
 
 
-        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
+        return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
+    }
+
+    public MoveTransition unMakeMove(final Move move) {
+        return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePiece();

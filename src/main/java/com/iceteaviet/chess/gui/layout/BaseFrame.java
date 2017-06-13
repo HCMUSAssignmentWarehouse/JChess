@@ -49,12 +49,21 @@ public abstract class BaseFrame extends JFrame implements BaseView {
     public void initData() {
     }
 
+    public boolean onCreateOptionsMenu(Toolbar toolbar) {
+        return true;
+    }
+
     public void setShowToolbar(boolean isShow) {
         //Toolbar
         if (isShow) {
             mToolbar = new Toolbar(width, 80);
             add(mToolbar, BorderLayout.NORTH);
+            onCreateOptionsMenu(mToolbar);
         }
         this.isShowToolbar = isShow;
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 }

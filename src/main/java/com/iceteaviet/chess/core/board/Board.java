@@ -132,6 +132,10 @@ public class Board {
         return this.whitePieces;
     }
 
+    public Iterable<Piece> getAllPieces() {
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePieces, this.blackPieces));
+    }
+
     private Collection<Move> calculateLegalMove(final Collection<Piece> pieces) {
         final List<Move> legalMoves = new ArrayList<>();
 

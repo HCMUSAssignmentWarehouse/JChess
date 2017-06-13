@@ -102,6 +102,15 @@ public abstract class Move {
         return null;
     }
 
+    public Board undo() {
+        final Board.Builder builder = new Board.Builder();
+        for (final Piece piece : this.board.getAllPieces()) {
+            builder.setPiece(piece);
+        }
+        builder.setMoveMaker(this.board.getCurrentPlayer().getAlliance());
+        return builder.build();
+    }
+
     public static final class MajorMove extends Move {
 
         public MajorMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
