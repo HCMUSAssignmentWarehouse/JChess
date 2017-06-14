@@ -2,7 +2,7 @@
 
 **Arthur Chessr** is an awesome chess written in pure java with material design UI build on JSwing.
 
-Time spent: **120** hours spent in total
+Time spent: **60** hours spent in total
 
 ## User Stories
 
@@ -33,7 +33,7 @@ Here's a walkthrough of implemented user stories:
 ## Notes
 
 Althought this project is under Apache License, This is still our final project at school.
-So, PLEASE DO NOT COPY the source code or reuse even small part of it anywhere with any purpose until 30th June 2017.
+So, PLEASE DO NOT COPY the source code or reuse even small part of it anywhere with any purpose UNTIL 30th June 2017. (15 days from now)
 
 
 ## Open-source libraries used
