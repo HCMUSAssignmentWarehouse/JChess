@@ -1,26 +1,25 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
+import main.java.com.iceteaviet.chess.algorithms.Minimax;
+import main.java.com.iceteaviet.chess.algorithms.MoveStrategy;
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
 import main.java.com.iceteaviet.chess.core.board.Move;
 import main.java.com.iceteaviet.chess.core.board.Tile;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
-import main.java.com.iceteaviet.chess.algorithms.Minimax;
-import main.java.com.iceteaviet.chess.algorithms.MoveStrategy;
-import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
-import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
-import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
 import main.java.com.iceteaviet.chess.gui.dialog.GameSetupDialog;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
-import main.java.com.iceteaviet.chess.utils.FileUtils;
+import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
+import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
+import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
+import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -37,7 +36,7 @@ public class Table extends Observable {
     private final MainFrame gameFrame;
     private final BoardPanel boardPanel;
     private final TakenPiecesPanel takenPiecesPanel;
-    private final GameHistoryPanel gameHistoryPanel;
+    private final RightMenuPanel rightMenuPanel;
     private final MoveLog moveLog;
     private final GameSetupDialog gameSetupDialog;
     private Board chessBoard;
@@ -51,12 +50,10 @@ public class Table extends Observable {
     private Table() {
         this.gameFrame = new MainFrame("Arthur Chess");
         this.chessBoard = Board.createStandardBoard();
-        final JMenuBar tableMenuBar = createTableMenuBar();
-        this.gameFrame.setJMenuBar(tableMenuBar);
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
-        this.gameHistoryPanel = new GameHistoryPanel();
-        this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
+        this.rightMenuPanel = new RightMenuPanel();
+        this.gameFrame.add(this.rightMenuPanel, BorderLayout.EAST);
         this.moveLog = new MoveLog();
         this.addObserver(new TableGameAIWatcher());
         this.gameSetupDialog = new GameSetupDialog(this.gameFrame, true);
@@ -64,7 +61,6 @@ public class Table extends Observable {
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setShowToolbar(true);
-        this.gameFrame.setVisible(true);
     }
 
     public static Table getInstance() {
@@ -72,136 +68,18 @@ public class Table extends Observable {
     }
 
     public void show() {
+        this.gameFrame.setMenuBarEnabled(true);
+        this.gameFrame.setVisible(true);
         Table.getInstance().getMoveLog().clear();
         Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
         Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
         Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
     }
 
-    private JMenuBar createTableMenuBar() {
-        final JMenuBar tableMenuBar = new JMenuBar();
-        tableMenuBar.add(createFileMenu());
-        tableMenuBar.add(createPreferenceMenu());
-        tableMenuBar.add(createOptionsMenu());
-        return tableMenuBar;
-    }
-
-    private JMenu createFileMenu() {
-        JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-
-        JMenuItem openPGN = new JMenuItem("Load PGN File", KeyEvent.VK_O);
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("pgn.png", 24, 24);
-            openPGN.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        openPGN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                int option = chooser.showOpenDialog(Table.getInstance().getMainGameFrame());
-                if (option == JFileChooser.APPROVE_OPTION) {
-                    FileUtils.loadPGNFile(chooser.getSelectedFile());
-                }
-            }
-        });
-        fileMenu.add(openPGN);
-
-        final JMenuItem saveToPGN = new JMenuItem("Save Game", KeyEvent.VK_S);
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("save.png", 24, 24);
-            saveToPGN.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        saveToPGN.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final JFileChooser chooser = new JFileChooser();
-                chooser.setFileFilter(new FileFilter() {
-                    @Override
-                    public String getDescription() {
-                        return ".pgn";
-                    }
-                    @Override
-                    public boolean accept(final File file) {
-                        return file.isDirectory() || file.getName().toLowerCase().endsWith("pgn");
-                    }
-                });
-                final int option = chooser.showSaveDialog(Table.getInstance().getMainGameFrame());
-                if (option == JFileChooser.APPROVE_OPTION) {
-                    FileUtils.savePGNFile(chooser.getSelectedFile());
-                }
-            }
-        });
-        fileMenu.add(saveToPGN);
-
-        final JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
-
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("close.png",24,24);
-            exitMenuItem.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        exitMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-        fileMenu.add(exitMenuItem);
-        return fileMenu;
-    }
-
-    private Component getMainGameFrame() {
+    public Component getMainGameFrame() {
         return this.gameFrame;
     }
 
-    private JMenu createOptionsMenu() {
-        final JMenu optionsMenu = new JMenu("Options");
-        optionsMenu.setMnemonic(KeyEvent.VK_O);
-
-        final JMenuItem gameRenewMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("renew.png", 24, 24);
-            gameRenewMenuItem.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        gameRenewMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                //TODO: Re-new the game
-
-            }
-
-        });
-        optionsMenu.add(gameRenewMenuItem);
-
-        JMenuItem setupGameMenuItem = new JMenuItem("Setup Game");
-
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("settings.png", 24, 24);
-            setupGameMenuItem.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        setupGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Table.getInstance().getGameSetupDialog().promptUser();
-                Table.getInstance().setupUpdate(Table.getInstance().getGameSetupDialog());
-            }
-        });
-
-        optionsMenu.add(setupGameMenuItem);
-        return optionsMenu;
-    }
 
     public void undoLastMove() {
         final Move lastMove = Table.getInstance().getMoveLog().removeMove(Table.getInstance().getMoveLog().size() - 1);
@@ -214,96 +92,17 @@ public class Table extends Observable {
         //Table.getInstance().getDebugPanel().redo();
     }
 
-    private void setupUpdate(final GameSetupDialog gameSetupDialog) {
+    public void setupUpdate(final GameSetupDialog gameSetupDialog) {
         setChanged();
         notifyObservers();
     }
 
-    private JMenu createPreferenceMenu() {
-        final JMenu prefrenceMenu = new JMenu("Preferences");
-        JMenuItem  flipBoardMenuItem = new JMenuItem("Flip Board");
-        try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("flip.png", 24, 24);
-            flipBoardMenuItem.setIcon(icon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        flipBoardMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boardDirection = boardDirection.opposites();
-                boardPanel.drawBoard(chessBoard);
-            }
-        });
-        prefrenceMenu.add(flipBoardMenuItem);
-
-
-        final JMenu colorChooserSubMenu = new JMenu("Choose Colors");
-        colorChooserSubMenu.setMnemonic(KeyEvent.VK_S);
-
-        final JMenuItem chooseDarkMenuItem = new JMenuItem("Choose Dark Tile Color");
-        colorChooserSubMenu.add(chooseDarkMenuItem);
-
-        final JMenuItem chooseLightMenuItem = new JMenuItem("Choose Light Tile Color");
-        colorChooserSubMenu.add(chooseLightMenuItem);
-
-        final JMenuItem chooseLegalHighlightMenuItem = new JMenuItem(
-                "Choose Legal Move Highlight Color");
-        colorChooserSubMenu.add(chooseLegalHighlightMenuItem);
-
-        prefrenceMenu.add(colorChooserSubMenu);
-
-        chooseDarkMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final Color colorChoice = JColorChooser.showDialog(Table.getInstance().getMainGameFrame(), "Choose Dark Tile Color",
-                        Table.getInstance().getMainGameFrame().getBackground());
-                if (colorChoice != null) {
-                    //TODO: Set chess board dark color
-                    //Table.getInstance().getBoardPanel().setTileDarkColor(chessBoard, colorChoice);
-                }
-            }
-        });
-
-        chooseLightMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final Color colorChoice = JColorChooser.showDialog(Table.getInstance().getMainGameFrame(), "Choose Light Tile Color",
-                        Table.getInstance().getMainGameFrame().getBackground());
-                if (colorChoice != null) {
-                    //TODO: Set chess board light color
-                    //Table.getInstance().getBoardPanel().setTileLightColor(chessBoard, colorChoice);
-                }
-            }
-        });
-
-        chooseLegalHighlightMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                System.out.println("implement me");
-                //TODO: Change highlight color
-                //Table.getInstance().getGameFrame().repaint();
-            }
-        });
-
-
-        prefrenceMenu.addSeparator();
-        JCheckBoxMenuItem legalMoveHighLighterCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves", highLightLegalMoves);
-        legalMoveHighLighterCheckbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                highLightLegalMoves = legalMoveHighLighterCheckbox.isSelected();
-            }
-        });
-
-        prefrenceMenu.add(legalMoveHighLighterCheckbox);
-
-        return prefrenceMenu;
-    }
-
     public Board getGameBoard() {
         return this.chessBoard;
+    }
+
+    public RightMenuPanel getRightMenuPanel() {
+        return this.rightMenuPanel;
     }
 
     public GameSetupDialog getGameSetupDialog() {
@@ -315,7 +114,7 @@ public class Table extends Observable {
     }
 
     public GameHistoryPanel getGameHistoryPanel() {
-        return this.gameHistoryPanel;
+        return this.rightMenuPanel.getGameHistoryPanel();
     }
 
     public TakenPiecesPanel getTakenPiecesPanel() {
@@ -337,7 +136,19 @@ public class Table extends Observable {
     private void moveMadeUpdate(PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
+    }
 
+    public boolean isHighLightLegalMoves() {
+        return highLightLegalMoves;
+    }
+
+    public void setHighLightLegalMoves(boolean b) {
+        this.highLightLegalMoves = b;
+    }
+
+    public void flipBoard() {
+        boardDirection = boardDirection.opposites();
+        boardPanel.drawBoard(chessBoard);
     }
 
     public enum PlayerType {
@@ -506,7 +317,7 @@ public class Table extends Observable {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
 
-                    if(Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer()) ||
+                    if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer()) ||
                             BoardUtils.isEndGame(Table.getInstance().getGameBoard())) {
                         return;
                     }
@@ -540,7 +351,7 @@ public class Table extends Observable {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
+                                rightMenuPanel.getGameHistoryPanel().redo(chessBoard, moveLog);
                                 takenPiecesPanel.redo(moveLog);
 
                                 //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
@@ -614,7 +425,7 @@ public class Table extends Observable {
                     String imgName = board.getTile(this.tileId).getPiece().getPieceAllianceLetter()
                             + board.getTile(this.tileId).getPiece().toString()
                             + UIConstants.CHESS_DRAWABLE_EXTENSION;
-                    ImageIcon icon = UIUtils.getScaledIconFromResources(imgName.toLowerCase(),UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
+                    ImageIcon icon = UIUtils.getScaledIconFromResources(imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
                     add(new JLabel(icon));
                 } catch (IOException e) {
                     e.printStackTrace();

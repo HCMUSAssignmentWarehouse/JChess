@@ -2,8 +2,9 @@ package main.java.com.iceteaviet.chess.gui.layout;
 
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.Move;
-import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.UIConstants;
+import main.java.com.iceteaviet.chess.gui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,13 +16,11 @@ import java.util.List;
  * Created by MyPC on 5/17/2017.
  */
 public class GameHistoryPanel extends JPanel {
-
-    private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100, 40);
     private final DataModel model;
     private final JScrollPane scrollPane;
 
     public GameHistoryPanel() {
-        this.setLayout(new BorderLayout());
+        //this.setLayout(new BorderLayout());
         //setBackground(UIConstants.PRIMARY_BG_COLOR);
         this.model = new DataModel();
         final JTable table = new JTable(model);
@@ -30,8 +29,8 @@ public class GameHistoryPanel extends JPanel {
         UIUtils.setCellTextAllignment(table, SwingConstants.CENTER);
         this.scrollPane = new JScrollPane(table);
         scrollPane.setColumnHeaderView(table.getTableHeader());
-        scrollPane.setPreferredSize(HISTORY_PANEL_DIMENSION);
-        this.add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setPreferredSize(new Dimension(Double.valueOf(UIConstants.RIGHT_GAME_PANEL_DIMENSION.getWidth()).intValue(), 120));
+        this.add(scrollPane);
         this.setVisible(true);
     }
 
@@ -45,7 +44,7 @@ public class GameHistoryPanel extends JPanel {
     }
 
     public void redo(final Board board,
-              final Table.MoveLog moveHistory) {
+                     final Table.MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {

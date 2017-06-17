@@ -30,7 +30,7 @@ public class BaseDialog extends JDialog implements BaseView {
         // invoke the JFrame constructor
         setSize(width, height);
         //setLayout( new FlowLayout() );       // set the layout manager
-        setLayout(null);
+        //setLayout(null);
 
         //Init layout
         initLayoutView();

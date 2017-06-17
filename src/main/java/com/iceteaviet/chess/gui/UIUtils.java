@@ -17,14 +17,15 @@ import java.io.IOException;
  */
 public class UIUtils {
     public static ImageIcon getScaledIconFromResources(String imgName, int width, int height) throws IOException {
-            Image img = getImageFromResources(imgName);
-            img = img.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
+        Image img = getImageFromResources(imgName);
+        img = img.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
 
-    public static void setEmptyBorder(JButton button) {
+    public static void setEmptyBorder(JButton button, int paddingTop, int paddingLeft,
+                                      int paddingBottom, int paddingRight) {
         if (button != null) {
-            Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+            Border emptyBorder = BorderFactory.createEmptyBorder(paddingTop, paddingLeft, paddingBottom, paddingRight);
             button.setBorder(emptyBorder);
         }
     }
@@ -52,14 +53,21 @@ public class UIUtils {
         return new ImageIcon(image);
     }
 
+    public static ImageIcon getGifIconFromResource(Class<?> context, String fileName, int width, int height) throws IOException {
+        ImageIcon icon = new ImageIcon(context.getClassLoader().getResource(UIConstants.DEFAULT_GIF_RESOURCE_PATH + fileName));
+
+        icon = new ImageIcon(icon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_DEFAULT));
+
+        return icon;
+    }
+
     public static void setCellTextAllignment(JTable table, int alignment) {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(alignment);
 
         TableModel tableModel = table.getModel();
 
-        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++)
-        {
+        for (int columnIndex = 0; columnIndex < tableModel.getColumnCount(); columnIndex++) {
             table.getColumnModel().getColumn(columnIndex).setCellRenderer(rightRenderer);
         }
     }

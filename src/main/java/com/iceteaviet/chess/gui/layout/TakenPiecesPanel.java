@@ -3,9 +3,9 @@ package main.java.com.iceteaviet.chess.gui.layout;
 import com.google.common.primitives.Ints;
 import main.java.com.iceteaviet.chess.core.board.Move;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
+import main.java.com.iceteaviet.chess.gui.Table;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
-import main.java.com.iceteaviet.chess.gui.Table;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -22,7 +22,6 @@ import java.util.List;
 public class TakenPiecesPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final Dimension TAKEN_PIECES_PANEL_DIMENSION = new Dimension(100, 80);
     private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
     private final JPanel northPanel;
     private final JPanel southPanel;
@@ -37,7 +36,7 @@ public class TakenPiecesPanel extends JPanel {
         this.southPanel.setBackground(UIConstants.PRIMARY_BG_COLOR);
         add(this.northPanel, BorderLayout.NORTH);
         add(this.southPanel, BorderLayout.SOUTH);
-        setPreferredSize(TAKEN_PIECES_PANEL_DIMENSION);
+        setPreferredSize(UIConstants.LEFT_TAKEN_PIECES_PANEL_DIMENSION);
     }
 
     public void redo(final Table.MoveLog moveLog) {
@@ -90,9 +89,9 @@ public class TakenPiecesPanel extends JPanel {
 
         for (final Piece takenPiece : blackTakenPieces) {
             try {
-               String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
-                       + takenPiece.toString()
-                       + UIConstants.CHESS_DRAWABLE_EXTENSION;
+                String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
+                        + takenPiece.toString()
+                        + UIConstants.CHESS_DRAWABLE_EXTENSION;
                 final ImageIcon icon = UIUtils.getScaledIconFromResources(iconName.toLowerCase(), 40, 40);
                 final JLabel imageLabel = new JLabel(icon);
                 this.northPanel.add(imageLabel);
