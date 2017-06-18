@@ -3,6 +3,7 @@ package main.java.com.iceteaviet.chess.core.board;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.Constants;
 import main.java.com.iceteaviet.chess.core.piece.*;
 import main.java.com.iceteaviet.chess.core.player.BlackPlayer;
 import main.java.com.iceteaviet.chess.core.player.Player;
@@ -80,7 +81,7 @@ public class Board {
         builder.setPiece(new Knight(Alliance.WHITE, 62));
         builder.setPiece(new Rook(Alliance.WHITE, 63));
 
-        builder.setMoveMaker(Alliance.WHITE);
+        builder.setMoveMaker(Constants.FIRST_MOVE_ALLIANCE);
         return builder.build();
 
     }

@@ -6,6 +6,7 @@ package main.java.com.iceteaviet.chess.network;
 public class NetworkManager {
     private static NetworkManager mInstance = null;
     private boolean isConnected = false;
+    private boolean isHost = false;
 
     private NetworkManager() {
 
@@ -28,6 +29,14 @@ public class NetworkManager {
         }
     }
 
+    public void setIsHost(boolean isHost) {
+        this.isHost = isHost;
+    }
+
+    public boolean isHost() {
+        return isHost;
+    }
+
     public boolean isConnected() {
         return isConnected;
     }
@@ -43,6 +52,15 @@ public class NetworkManager {
             else
                 ChessClient.getInstance().closeConnection();
             isConnected = false;
+        }
+    }
+
+    public void sendMoveMessages(int currCoord, int desCoord) {
+        if (isHost) {
+            ChessServer.getInstance().getPlay().sendMoveMessage(currCoord, desCoord);
+        }
+        else {
+            ChessClient.getInstance().getPlay().sendMoveMessage(currCoord, desCoord);
         }
     }
 }

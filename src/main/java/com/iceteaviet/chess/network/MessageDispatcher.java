@@ -40,7 +40,7 @@ public class MessageDispatcher implements Runnable {
                     System.out.println("Sock closed");
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
-                        listener.onStatusUpdate("Network error! Connection closed.");
+                        listener.onStatusUpdate(NetworkEndPoint.STATUS_ERROR, "Network error! Connection closed.");
                     break;
                 }
                 System.out.println("Waiting for data...");
@@ -54,14 +54,14 @@ public class MessageDispatcher implements Runnable {
                 if (msg.startsWith(NetworkConstants.MESSAGE_PREFIX)) {
                     end.getChat().receive(msg);
                 } else if (msg.startsWith(NetworkConstants.CHESS_MOVE_PREFIX)) {
-                    end.getPlay().receive(msg);
+                    end.getPlay().receiveMoveMessage(msg);
                 } else if (msg.equals(NetworkConstants.CLIENT_END_ORDER)) {
                     //Client close connection
                     System.out.println("Receive client end");
                     ChessServer.getInstance().sendEndMessage();
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
-                        listener.onStatusUpdate("Client has disconnected.");
+                        listener.onStatusUpdate(NetworkEndPoint.STATUS_CLIENT_CLOSED, "Client has disconnected.");
                     break;
                 } else if (msg.equals(NetworkConstants.SERVER_END_ORDER)) {
                     System.out.println("Receive server end");
@@ -69,7 +69,7 @@ public class MessageDispatcher implements Runnable {
                     ChessClient.getInstance().sendEndMessage();
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
-                        listener.onStatusUpdate("Server has disconnected.");
+                        listener.onStatusUpdate(NetworkEndPoint.STATUS_SERVER_CLOSED,"Server has disconnected.");
                     break;
                 } else {
                     System.out.println("Error: malformed packet " + msg + " in MessageDispatcher!!!!!");

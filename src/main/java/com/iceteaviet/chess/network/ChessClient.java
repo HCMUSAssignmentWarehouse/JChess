@@ -36,6 +36,7 @@ public final class ChessClient extends NetworkEndPoint {
             }
             startChat(Table.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
                     Table.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
+            startGame();
         } catch (IOException e) {
             e.printStackTrace();
         }

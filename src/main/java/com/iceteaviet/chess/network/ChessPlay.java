@@ -1,5 +1,8 @@
 package main.java.com.iceteaviet.chess.network;
 
+import javafx.scene.control.Tab;
+import main.java.com.iceteaviet.chess.gui.Table;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.StringTokenizer;
@@ -14,10 +17,10 @@ public class ChessPlay {
 
     private BufferedReader netIn;
 
-    //private ChessGame chessGame;
+    private Table table;
 
     public ChessPlay(Socket opponent) {
-        //chessGame = ChessComponent.getInstance().chessGame;
+        table = Table.getInstance();
         this.opponent = opponent;
         try {
             netIn = new BufferedReader(new InputStreamReader(opponent.getInputStream()));
@@ -29,17 +32,16 @@ public class ChessPlay {
     /**
      * The method called by MsgRedirector....
      */
-    public void receive(String msg) {
+    public void receiveMoveMessage(String msg) {
         msg = msg.substring(NetworkConstants.CHESS_MOVE_PREFIX.length());
 
-        StringTokenizer st = new StringTokenizer(msg, ":");
+        StringTokenizer st = new StringTokenizer(msg, NetworkConstants.CHESS_MOVE_DELIMITER);
 
-        int fromCol = Integer.parseInt(st.nextToken());
-        int fromRow = Integer.parseInt(st.nextToken());
-        int toCol = Integer.parseInt(st.nextToken());
-        int toRow = Integer.parseInt(st.nextToken());
+        int currentCoordinate = Integer.parseInt(st.nextToken());
+        int destinationCoordinate = Integer.parseInt(st.nextToken());
 
-        //chessGame.movePiece(new Move(fromCol, fromRow, toCol, toRow));
+        table.movePiece(currentCoordinate, destinationCoordinate);
+        table.drawBoardAfterMove();
     }
 
     /**
@@ -48,10 +50,9 @@ public class ChessPlay {
      * <toCol>. Checking must be done beforehand if the
      * move is legal.
      */
-    public void move(int fromCol, int fromRow,
-                     int toCol, int toRow) {
+    public void sendMoveMessage(int currCoord, int desCoord) {
         try {
-            String msg = NetworkConstants.CHESS_MOVE_PREFIX + fromCol + ":" + fromRow + ":" + toCol + ":" + toRow + "\n";
+            String msg = NetworkConstants.CHESS_MOVE_PREFIX + currCoord + NetworkConstants.CHESS_MOVE_DELIMITER + desCoord + "\n";
             System.out.println("message=" + msg);
             netOut.write(msg);
             netOut.flush();

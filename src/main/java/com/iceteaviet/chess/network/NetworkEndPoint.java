@@ -16,7 +16,16 @@ public abstract class NetworkEndPoint extends Thread {
     /**
      * The default port to use
      */
-    protected static final int DEFAULT_PORT = 2212;
+    protected static final int DEFAULT_PORT = NetworkConstants.DEFAULT_PORT;
+
+    public static final int STATUS_CONNECTED = 1;
+    public static final int STATUS_DISCONNECTED = -1;
+    public static final int STATUS_UNKNOWN = 0;
+    public static final int STATUS_SERVER_STARTED = 2;
+    public static final int STATUS_SERVER_CLOSED = 3;
+    public static final int STATUS_CLIENT_CLOSED = 2;
+    public static final int STATUS_ERROR = -2;
+
 
     /**
      * The default host IP to use
@@ -46,7 +55,7 @@ public abstract class NetworkEndPoint extends Thread {
      * A chess game session
      */
     protected ChessPlay netPlay;
-    private OnNetworkUpdateListener mListener;
+    protected OnNetworkUpdateListener mListener;
 
     protected NetworkEndPoint(String name) {
         //super(name);
@@ -67,7 +76,7 @@ public abstract class NetworkEndPoint extends Thread {
             chat = new ChessChat(opponent, doc, field, userName);
             NetworkManager.getInstance().setConnected(true);
             if (mListener != null)
-                mListener.onStatusUpdate("Connection established.");
+                mListener.onStatusUpdate(STATUS_CONNECTED, "Connection established.");
         }
     }
 
@@ -87,7 +96,7 @@ public abstract class NetworkEndPoint extends Thread {
                 opponent.close();
 
             if (mListener != null)
-                mListener.onStatusUpdate("Connection closed.");
+                mListener.onStatusUpdate(STATUS_DISCONNECTED,"Connection closed.");
             System.out.println("Connection closed.");
         } catch (IOException e) {
             System.out.println("Error: Closing problem");
@@ -117,6 +126,6 @@ public abstract class NetworkEndPoint extends Thread {
     public abstract void sendEndMessage();
 
     public interface OnNetworkUpdateListener {
-        public void onStatusUpdate(String statusMessage);
+        public void onStatusUpdate(int statusCode, String statusMessage);
     }
 }

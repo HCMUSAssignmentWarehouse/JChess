@@ -123,6 +123,7 @@ public class MainFrame extends BaseFrame {
             public void actionPerformed(ActionEvent e) {
                 networkDialog = new NetworkDialog(MainFrame.this, false);
                 networkDialog.setVisible(true);
+                Table.getInstance().flipBoard();
             }
         });
         networkMenu.add(clientMenu);

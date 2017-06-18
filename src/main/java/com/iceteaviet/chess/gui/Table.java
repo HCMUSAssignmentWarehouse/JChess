@@ -9,12 +9,16 @@ import main.java.com.iceteaviet.chess.core.board.Move;
 import main.java.com.iceteaviet.chess.core.board.Tile;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
+import main.java.com.iceteaviet.chess.core.player.Player;
 import main.java.com.iceteaviet.chess.gui.dialog.GameSetupDialog;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
+import main.java.com.iceteaviet.chess.network.ChessPlay;
+import main.java.com.iceteaviet.chess.network.NetworkManager;
+import sun.nio.ch.Net;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,6 +49,8 @@ public class Table extends Observable {
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean highLightLegalMoves = true;
+    private Player mainPlayer; //Bottom side player
+    private boolean isNetPlay = false;
     private Move computerMove;
 
     private Table() {
@@ -80,6 +86,15 @@ public class Table extends Observable {
         return this.gameFrame;
     }
 
+    public void movePiece(int currCoord, int desCoord) {
+        final Move move = Move.MoveFactory.createMove(chessBoard, currCoord, desCoord);
+
+        final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
+        if (transition.getMoveStatus().isDone()) {
+            chessBoard = transition.getTransitionBoard();
+            moveLog.addMove(move);
+        }
+    }
 
     public void undoLastMove() {
         final Move lastMove = Table.getInstance().getMoveLog().removeMove(Table.getInstance().getMoveLog().size() - 1);
@@ -95,6 +110,14 @@ public class Table extends Observable {
     public void setupUpdate(final GameSetupDialog gameSetupDialog) {
         setChanged();
         notifyObservers();
+    }
+
+    public void setNetPlay(boolean isNetPlay) {
+        this.isNetPlay = isNetPlay;
+    }
+
+    public boolean isNetPlay() {
+        return isNetPlay;
     }
 
     public Board getGameBoard() {
@@ -149,6 +172,22 @@ public class Table extends Observable {
     public void flipBoard() {
         boardDirection = boardDirection.opposites();
         boardPanel.drawBoard(chessBoard);
+    }
+
+    public void drawBoardAfterMove() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                rightMenuPanel.getGameHistoryPanel().redo(chessBoard, moveLog);
+                takenPiecesPanel.redo(moveLog);
+
+                //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
+                Table.getInstance().moveMadeUpdate(PlayerType.HUMAN);
+                //}
+
+                boardPanel.drawBoard(chessBoard);
+            }
+        });
     }
 
     public enum PlayerType {
@@ -336,31 +375,16 @@ public class Table extends Observable {
                         } else {
                             destinationTile = chessBoard.getTile(tileId);
 
-                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
-
-                            final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
-                            if (transition.getMoveStatus().isDone()) {
-                                chessBoard = transition.getTransitionBoard();
-                                moveLog.addMove(move);
-
+                            movePiece(sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
+                            if (isNetPlay) {
+                                NetworkManager.getInstance().sendMoveMessages(sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
                             }
+
                             sourceTile = null;
                             destinationTile = null;
                             humanMovedPiece = null;
                         }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                rightMenuPanel.getGameHistoryPanel().redo(chessBoard, moveLog);
-                                takenPiecesPanel.redo(moveLog);
-
-                                //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                                Table.getInstance().moveMadeUpdate(PlayerType.HUMAN);
-                                //}
-
-                                boardPanel.drawBoard(chessBoard);
-                            }
-                        });
+                        drawBoardAfterMove();
                     }
                 }
 

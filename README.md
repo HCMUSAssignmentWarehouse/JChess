@@ -2,7 +2,7 @@
 
 **Arthur Chessr** is an awesome chess written in pure java with material design UI build on JSwing.
 
-Time spent: **70** hours spent in total
+Time spent: **74** hours spent in total
 
 ## User Stories
 
@@ -10,7 +10,7 @@ The basic **required** functionality:
 
 * [x]  Giao diện đồ họa
 * [x] Có chức năng cho máy đóng vai trò người chơi. (MiniMax Algorithm)
-* [ ] Hỗ trợ tối đa 02 người chơi qua mạng LAN
+* [x] Hỗ trợ tối đa 02 người chơi qua mạng LAN
 * [x] Có thể save và load game thành với dạng file PGN.
 * [x] Có thể chat giữa hai người chơi.
 * [x] Hỗ trợ gợi ý nước đi hợp lệ.

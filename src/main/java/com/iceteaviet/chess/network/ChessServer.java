@@ -3,7 +3,9 @@ package main.java.com.iceteaviet.chess.network;
 import main.java.com.iceteaviet.chess.gui.Table;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 
 public final class ChessServer extends NetworkEndPoint {
 
@@ -35,7 +37,7 @@ public final class ChessServer extends NetworkEndPoint {
         startChat(Table.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
                 Table.getInstance().getRightMenuPanel().getChatPanel().getTextField(),
                 "Server");
-
+        startGame();
     }
 
     /**
@@ -59,18 +61,17 @@ public final class ChessServer extends NetworkEndPoint {
      */
     public void listen(int port) {
         try {
-            //System.out.println("In ChessServer listen() method\nCreating new ServerSocket on port " + port); // debug msg
             if (!NetworkUtils.isValidPort(port))
                 port = DEFAULT_PORT;
 
             this.listenPort = port;
             ss = new ServerSocket(listenPort);
-            //System.out.println("A ServerSocket on port " + port + " has been created");
             // loop until the connected client is a Chess client
             while (true) {
                 System.out.println("Waiting for incoming connections on port " + String.valueOf(listenPort) + "...");
+                if (mListener != null)
+                    mListener.onStatusUpdate(STATUS_SERVER_STARTED, "Waiting for incoming connections...");
                 waitForConnection();
-                //System.out.println("Incoming connection.");
 
                 getStreams();
 

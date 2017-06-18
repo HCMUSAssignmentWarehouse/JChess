@@ -40,7 +40,7 @@ public abstract class BaseFrame extends JFrame implements BaseView {
     public void initLayoutView() {
         //Toolbar
         if (isShowToolbar) {
-            mToolbar = new Toolbar(width, 80);
+            mToolbar = new Toolbar(width, 80, true);
             add(mToolbar);
         }
     }
@@ -56,7 +56,7 @@ public abstract class BaseFrame extends JFrame implements BaseView {
     public void setShowToolbar(boolean isShow) {
         //Toolbar
         if (isShow) {
-            mToolbar = new Toolbar(width, 80);
+            mToolbar = new Toolbar(width, 80, true);
             add(mToolbar, BorderLayout.NORTH);
             onCreateOptionsMenu(mToolbar);
         }

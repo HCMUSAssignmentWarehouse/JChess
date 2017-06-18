@@ -3,10 +3,7 @@ package main.java.com.iceteaviet.chess.gui.dialog;
 import main.java.com.iceteaviet.chess.gui.Table;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
-import main.java.com.iceteaviet.chess.network.ChessClient;
-import main.java.com.iceteaviet.chess.network.ChessServer;
-import main.java.com.iceteaviet.chess.network.NetworkEndPoint;
-import main.java.com.iceteaviet.chess.network.NetworkManager;
+import main.java.com.iceteaviet.chess.network.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by Genius Doan on 6/16/2017.
@@ -28,13 +27,17 @@ public class NetworkDialog extends BaseDialog{
     JTextField txtPort;
     JLabel lblLoad;
     JButton btnConnect;
+    JLabel lblIPInfo;
+    JLabel lblPortInfo;
 
     public NetworkDialog(JFrame parent, boolean isHost) {
         super(parent, false);
-        this.width = 400;
-        this.height = 200;
+        this.width = 440;
+        this.height = 240;
         setSize(new Dimension(width, height));
         this.isHost = isHost;
+        Table.getInstance().setNetPlay(true);
+        NetworkManager.getInstance().setIsHost(isHost);
         setResizable(false);
         initLayoutView();
 
@@ -47,6 +50,7 @@ public class NetworkDialog extends BaseDialog{
             @Override
             public void windowClosing(WindowEvent e) {
                 NetworkManager.getInstance().sendEndMessages();
+                Table.getInstance().setNetPlay(false);
                 super.windowClosing(e);
             }
         });
@@ -55,11 +59,12 @@ public class NetworkDialog extends BaseDialog{
     public void inflateHostLayout() {
         setTitle("Chess Server");
         setLayout(new BorderLayout());
-        JLabel lblStatus = new JLabel("Finding chess opponent");
-        lblStatus.setBorder(new EmptyBorder(16,0,16, 0));
-        lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
+        setShowToolbar(true, true);
+
+        toolbar.setTitle("Finding chess opponent");
 
         lblLoad = new JLabel("Loading...", JLabel.CENTER);
+        lblLoad.setBorder(new EmptyBorder(12,8,8,8));
         try {
             ImageIcon icon = UIUtils.getGifIconFromResource(this.getClass(), "loader.gif", 64, 64);
             lblLoad.setIcon(icon);
@@ -67,25 +72,57 @@ public class NetworkDialog extends BaseDialog{
             ex.printStackTrace();
         }
 
-        this.add(lblStatus, BorderLayout.NORTH);
+        JPanel hostInfoPanel = new JPanel(new GridLayout(3,2));
+        hostInfoPanel.setBorder(new EmptyBorder(4,32,8,32));
+        JLabel lblHost = new JLabel("Host Information");
+        lblHost.setSize(new Dimension(width, 32));
+        lblHost.setBorder(new EmptyBorder(4,8,4,8));
+        lblHost.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        lblHost.setForeground(Color.WHITE);
+        lblHost.setOpaque(true);
+        JLabel fuck = new JLabel();
+        fuck.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        fuck.setOpaque(true);
+        lblIPInfo = new JLabel("127.0.0.1");
+        lblIPInfo.setFont(new Font("San-serif", Font.BOLD, 14));
+        lblPortInfo = new JLabel(String.valueOf(NetworkConstants.DEFAULT_PORT));
+        lblPortInfo.setFont(new Font("San-serif", Font.BOLD, 14));
+
+        try {
+            lblIPInfo.setText(InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        hostInfoPanel.add(lblHost);
+        hostInfoPanel.add(fuck);
+        hostInfoPanel.add(new JLabel("Host address"));
+        hostInfoPanel.add(lblIPInfo);
+        hostInfoPanel.add(new JLabel("Host port number"));
+        hostInfoPanel.add(lblPortInfo);
+
         this.add(lblLoad, BorderLayout.CENTER);
+        this.add(hostInfoPanel, BorderLayout.SOUTH);
     }
 
     public void inflateClientLayout() {
         setTitle("Chess Client");
         setLayout(null);
-        JLabel lblIP = new JLabel("IP Address");
-        lblIP.setBounds(MARGIN, MARGIN, 140, 24);
+        setShowToolbar(true, false);
+        toolbar.setTitle("Connect to chess host");
 
-        JLabel lblPort = new JLabel("Port (default: 2212)");
-        lblPort.setBounds(MARGIN, MARGIN + LINE_HEIGHT, 140, 24);
+        JLabel lblIP = new JLabel("IP Address");
+        lblIP.setBounds(MARGIN, MARGIN_TOP, 140, 24);
+
+        JLabel lblPort = new JLabel("Port (default: " + NetworkConstants.DEFAULT_PORT + ")");
+        lblPort.setBounds(MARGIN, MARGIN_TOP + LINE_HEIGHT, 140, 24);
 
         txtIP = new JTextField();
-        txtIP.setBounds(MARGIN + 140, MARGIN, 160, 24);
+        txtIP.setBounds(MARGIN + 140, MARGIN_TOP, 160, 24);
         txtIP.setPreferredSize(new Dimension(160,24));
 
         txtPort = new JTextField();
-        txtPort.setBounds(MARGIN + 140, MARGIN + LINE_HEIGHT, 160, 24);
+        txtPort.setBounds(MARGIN + 140, MARGIN_TOP + LINE_HEIGHT, 160, 24);
         txtPort.setPreferredSize(new Dimension(160,24));
 
         JPanel inputPanel = new JPanel();
@@ -118,7 +155,7 @@ public class NetworkDialog extends BaseDialog{
         server = ChessServer.getInstance();
         server.setOnNetworkUpdateListener(new NetworkEndPoint.OnNetworkUpdateListener() {
             @Override
-            public void onStatusUpdate(String statusMessage) {
+            public void onStatusUpdate(int statusCode, String statusMessage) {
                 if (lblLoad != null)
                     lblLoad.setText(statusMessage);
             }
@@ -131,9 +168,23 @@ public class NetworkDialog extends BaseDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 client = ChessClient.getInstance();
-                client.setIP(txtIP.getText());
-                client.setServerPort(txtPort.getText().isEmpty() ? 0 : Integer.valueOf(txtPort.getText()));
+                String ip = txtIP.getText();
+                int port = txtPort.getText().isEmpty() ? 0 : Integer.valueOf(txtPort.getText());
+
+                if (ip == null || ip.isEmpty()) {
+                    ip = InetAddress.getLoopbackAddress().getHostAddress();
+                    txtIP.setText(ip);
+                }
+                if (!NetworkUtils.isValidPort(port)) {
+                    port = NetworkConstants.DEFAULT_PORT;
+                    txtPort.setText(String.valueOf(port));
+                }
+
+                client.setIP(ip);
+                client.setServerPort(port);
                 client.start();
+                txtPort.setEditable(false);
+                txtIP.setEditable(false);
             }
         });
     }

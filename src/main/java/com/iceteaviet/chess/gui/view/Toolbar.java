@@ -18,12 +18,14 @@ public class Toolbar extends JPanel implements BaseView {
 
     //Local variables
     private int defaultWidth, defaultHeight;
+    private boolean mainToolbar = true;
     private OnClickListener mListener;
 
-    public Toolbar(int width, int height) {
+    public Toolbar(int width, int height, boolean isMainToolbar) {
         super();
         this.defaultWidth = width;
         this.defaultHeight = height;
+        this.mainToolbar = isMainToolbar;
         initLayoutView();
     }
 
@@ -42,33 +44,47 @@ public class Toolbar extends JPanel implements BaseView {
         setBackground(Color.decode(UIConstants.MATERIAL_TOOLBAR_COLOR));
         //setLayout(new BorderLayout());
 
-        int logoSize = defaultHeight - 2 * MARGIN;
-        JLabel logo = null;
-        try {
-            logo = new JLabel(UIUtils.getScaledIconFromResources("logo.png", logoSize, logoSize));
-            logo.setBorder(new EmptyBorder(8,8,8,8));
-            add(logo, BorderLayout.WEST);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (mainToolbar) {
+            int logoSize = defaultHeight - 2 * MARGIN;
+            JLabel logo = null;
+            try {
+                logo = new JLabel(UIUtils.getScaledIconFromResources("logo.png", logoSize, logoSize));
+                logo.setBorder(new EmptyBorder(8, 8, 8, 8));
+                add(logo, BorderLayout.WEST);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            JPanel titlePanel = new JPanel();
+            titlePanel.setBorder(new EmptyBorder(8, 8, 8, 8));
+            titlePanel.setOpaque(false);
+            titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
+            JLabel jTitle = new JLabel("ARTHUR CHESS");
+            jTitle.setBorder(new EmptyBorder(8, 8, 8, 8));
+            jTitle.setFont(new Font("Sans-serif", Font.BOLD, 20));
+            jTitle.setForeground(Color.WHITE);
+            titlePanel.add(jTitle);
+
+            JLabel jSubTitle = new JLabel("Version 0.1. Copyright © IceTeaViet");
+            jSubTitle.setBorder(new EmptyBorder(0, 8, 8, 8));
+            jSubTitle.setFont(new Font("Sans-serif", Font.PLAIN, 12));
+            jSubTitle.setForeground(Color.WHITE);
+            titlePanel.add(jSubTitle);
+
+            add(titlePanel);
         }
+    }
 
-        JPanel titlePanel = new JPanel();
-        titlePanel.setBorder(new EmptyBorder(8,8,8,8));
-        titlePanel.setOpaque(false);
-        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.PAGE_AXIS));
-        JLabel jTitle = new JLabel("ARTHUR CHESS");
-        jTitle.setBorder(new EmptyBorder(8,8,8,8));
-        jTitle.setFont(new Font("Sans-serif", Font.BOLD, 20));
+    public void setTitle(String title) {
+        JLabel jTitle = new JLabel(title);
+        jTitle.setBorder(new EmptyBorder(8, 8, 8, 8));
+        jTitle.setFont(new Font("Sans-serif", Font.BOLD, 16));
         jTitle.setForeground(Color.WHITE);
-        titlePanel.add(jTitle);
+        this.add(jTitle);
+    }
 
-        JLabel jSubTitle = new JLabel("Version 0.1. Copyright © IceTeaViet");
-        jSubTitle.setBorder(new EmptyBorder(0,8,8,8));
-        jSubTitle.setFont(new Font("Sans-serif", Font.PLAIN, 12));
-        jSubTitle.setForeground(Color.WHITE);
-        titlePanel.add(jSubTitle);
-
-        add(titlePanel);
+    public void setMainToolbar(boolean isMainToolbar) {
+        this.mainToolbar = isMainToolbar;
     }
 
     @Override

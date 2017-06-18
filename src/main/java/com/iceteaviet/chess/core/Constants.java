@@ -27,4 +27,6 @@ public interface Constants {
     long FIVE_MINUTES = ONE_MINUTE * 5;
     long TEN_MINUTES = ONE_MINUTE * 10;
     long TWENTY_MINUTES = ONE_MINUTE * 20;
+
+    public static Alliance FIRST_MOVE_ALLIANCE = Alliance.WHITE;
 }
