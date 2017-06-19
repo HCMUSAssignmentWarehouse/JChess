@@ -22,6 +22,11 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public int locationBonus() {
+        return this.pieceAlliance.knightBonus(this.piecePosition);
+    }
+
+    @Override
     public Collection<Move> calculateLegalMove(final Board board) {
 
         final List<Move> legalMoves = new ArrayList<>();

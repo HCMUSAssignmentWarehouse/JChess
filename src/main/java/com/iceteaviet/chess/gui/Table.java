@@ -1,8 +1,8 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
-import main.java.com.iceteaviet.chess.algorithms.Minimax;
-import main.java.com.iceteaviet.chess.algorithms.MoveStrategy;
+import main.java.com.iceteaviet.chess.algorithms.MiniMax;
+import main.java.com.iceteaviet.chess.algorithms.MoveAlgorithm;
 import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
@@ -17,10 +17,7 @@ import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
-import main.java.com.iceteaviet.chess.gui.view.Chronometer;
-import main.java.com.iceteaviet.chess.network.ChessPlay;
 import main.java.com.iceteaviet.chess.network.NetworkManager;
-import sun.nio.ch.Net;
 
 import javax.swing.*;
 import java.awt.*;
@@ -274,7 +271,8 @@ public class Table extends Observable {
 
         @Override
         protected Move doInBackground() throws Exception {
-            final MoveStrategy minimax = new Minimax(4);
+            //Find best move for AI
+            final MoveAlgorithm minimax = new MiniMax(4);
             final Move bestMove = minimax.execute(Table.getInstance().getGameBoard(), 4);
             return bestMove;
         }

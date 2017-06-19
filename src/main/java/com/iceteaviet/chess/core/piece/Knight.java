@@ -41,6 +41,11 @@ public class Knight extends Piece {
     }
 
     @Override
+    public int locationBonus() {
+        return this.pieceAlliance.knightBonus(this.piecePosition);
+    }
+
+    @Override
     public Collection<Move> calculateLegalMove(Board board) {
 
 

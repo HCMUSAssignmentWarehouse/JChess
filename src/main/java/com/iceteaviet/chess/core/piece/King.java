@@ -17,10 +17,28 @@ import java.util.List;
 public class King extends Piece {
 
     private final static int[] CANDIDATE_MOVE_COORDINATE = {-9, -8, -7, -1, 1, 7, 8, 9};
+    private final boolean kingSideCastleCapable;
+    private final boolean queenSideCastleCapable;
+    private final boolean isCastled;
 
 
-    public King(final Alliance pieceAlliance, final int piecePosition) {
-        super(PieceType.KING, piecePosition, pieceAlliance);
+    public King(final Alliance alliance,
+                final int piecePosition,
+                final boolean kingSideCastleCapable,
+                final boolean queenSideCastleCapable) {
+        this(alliance, piecePosition, DEFAULT_FIRST_MOVE, false ,kingSideCastleCapable, queenSideCastleCapable);
+    }
+
+    public King(final Alliance alliance,
+                final int piecePosition,
+                final boolean isFirstMove,
+                final boolean isCastled,
+                final boolean kingSideCastleCapable,
+                final boolean queenSideCastleCapable) {
+        super(PieceType.KING,piecePosition, alliance, isFirstMove);
+        this.isCastled = isCastled;
+        this.kingSideCastleCapable = kingSideCastleCapable;
+        this.queenSideCastleCapable = queenSideCastleCapable;
     }
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
@@ -31,6 +49,23 @@ public class King extends Piece {
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset) {
         return BoardUtils.SECOND_COLUMN.get(currentPosition) && ((candidateOffset == -7) || (candidateOffset == -1)
                 || (candidateOffset == 9));
+    }
+
+    @Override
+    public int locationBonus() {
+        return this.pieceAlliance.kingBonus(this.piecePosition);
+    }
+
+    public boolean isKingSideCastleCapable() {
+        return this.kingSideCastleCapable;
+    }
+
+    public boolean isQueenSideCastleCapable() {
+        return this.queenSideCastleCapable;
+    }
+
+    public boolean isCastled() {
+        return this.isCastled;
     }
 
     @Override
@@ -68,7 +103,7 @@ public class King extends Piece {
 
     @Override
     public King movePiece(final Move move) {
-        return new King(move.getMovedPiece().getPieceAlliance(), move.getDestinationCoordinate());
+        return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastlingMove(), false, false);
     }
 
 }
