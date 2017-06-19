@@ -1,5 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
+import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.gui.view.Chronometer;
@@ -13,8 +14,8 @@ import java.io.IOException;
  * Created by Genius Doan on 6/14/2017.
  */
 public class RightMenuPanel extends JPanel {
-    Chronometer chronometerA = new Chronometer("Player A");
-    Chronometer chronometerB = new Chronometer("Player B");
+    private Chronometer chronometerW = new Chronometer("Player White");
+    private Chronometer chronometerB = new Chronometer("Player Black");
 
     GameHistoryPanel gameHistoryPanel;
     ChatPanel chatPanel;
@@ -30,9 +31,11 @@ public class RightMenuPanel extends JPanel {
         JPanel timerPanel = new JPanel();
         timerPanel.setPreferredSize(new Dimension(getWidth(), getHeight() / 4));
         timerPanel.setBorder(new EmptyBorder(8, 0, 8, 0));
-        chronometerA.setBorder(new EmptyBorder(8, 8, 8, 4));
+        chronometerW.setBorder(new EmptyBorder(8, 8, 8, 4));
         chronometerB.setBorder(new EmptyBorder(8, 0, 8, 8));
-        timerPanel.add(chronometerA);
+        chronometerW.setAlliance(Alliance.WHITE);
+        chronometerB.setAlliance(Alliance.BLACK);
+        timerPanel.add(chronometerW);
         timerPanel.add(chronometerB);
 
         btnPause = new JButton("Pause Game");
@@ -57,6 +60,14 @@ public class RightMenuPanel extends JPanel {
         add(timerPanel);
         add(gameHistoryPanel);
         add(chatPanel);
+    }
+
+    public Chronometer getChronometerW() {
+        return chronometerW;
+    }
+
+    public Chronometer getChronometerB() {
+        return chronometerB;
     }
 
     public GameHistoryPanel getGameHistoryPanel() {

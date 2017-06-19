@@ -3,6 +3,7 @@ package main.java.com.iceteaviet.chess.gui;
 import com.google.common.collect.Lists;
 import main.java.com.iceteaviet.chess.algorithms.Minimax;
 import main.java.com.iceteaviet.chess.algorithms.MoveStrategy;
+import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
 import main.java.com.iceteaviet.chess.core.board.Move;
@@ -16,6 +17,7 @@ import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
+import main.java.com.iceteaviet.chess.gui.view.Chronometer;
 import main.java.com.iceteaviet.chess.network.ChessPlay;
 import main.java.com.iceteaviet.chess.network.NetworkManager;
 import sun.nio.ch.Net;
@@ -93,6 +95,17 @@ public class Table extends Observable {
         if (transition.getMoveStatus().isDone()) {
             chessBoard = transition.getTransitionBoard();
             moveLog.addMove(move);
+
+            //Switch the clock
+            if (move.getMovedPiece().getPieceAlliance().equals(Alliance.WHITE)) {
+                //White finished moving, now turn on the black clock
+                this.getRightMenuPanel().getChronometerW().pause();
+                this.getRightMenuPanel().getChronometerB().startOrResume();
+            }
+            else {
+                this.getRightMenuPanel().getChronometerB().pause();
+                this.getRightMenuPanel().getChronometerW().startOrResume();
+            }
         }
     }
 
@@ -110,6 +123,14 @@ public class Table extends Observable {
     public void setupUpdate(final GameSetupDialog gameSetupDialog) {
         setChanged();
         notifyObservers();
+    }
+
+    public Player getMainPlayer() {
+        return mainPlayer;
+    }
+
+    public void setMainPlayer(Player mainPlayer) {
+        this.mainPlayer = mainPlayer;
     }
 
     public void setNetPlay(boolean isNetPlay) {
@@ -368,6 +389,26 @@ public class Table extends Observable {
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTile == null) {
                             sourceTile = chessBoard.getTile(tileId);
+
+                            if (isNetPlay) {
+                                if (sourceTile.getPiece() != null
+                                        && !sourceTile.getPiece().getPieceAlliance().equals(mainPlayer.getAlliance())) {
+                                    //Opponent chess
+                                    sourceTile = null;
+                                    MessageBox.showWarning("You cannot move opponent's chess","Chess network play");
+                                    return;
+                                }
+                                else {
+                                    //Same alliance
+                                    if (!NetworkManager.getInstance().isConnected()) {
+                                        //But connection between server and client is not established
+                                        sourceTile = null;
+                                        MessageBox.showWarning("Please wait for other player to connect!", "Chess network play");
+                                        return;
+                                    }
+                                }
+                            }
+
                             humanMovedPiece = sourceTile.getPiece();
                             if (humanMovedPiece == null) {
                                 sourceTile = null;
@@ -376,7 +417,7 @@ public class Table extends Observable {
                             destinationTile = chessBoard.getTile(tileId);
 
                             movePiece(sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
-                            if (isNetPlay) {
+                            if (isNetPlay && NetworkManager.getInstance().isConnected()) {
                                 NetworkManager.getInstance().sendMoveMessages(sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
                             }
 

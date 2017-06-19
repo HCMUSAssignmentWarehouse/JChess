@@ -34,6 +34,8 @@ public class NetworkDialog extends BaseDialog{
         super(parent, false);
         this.width = 440;
         this.height = 240;
+        setLocationRelativeTo(null);
+        setLocation(900,0);
         setSize(new Dimension(width, height));
         this.isHost = isHost;
         Table.getInstance().setNetPlay(true);
@@ -51,6 +53,11 @@ public class NetworkDialog extends BaseDialog{
             public void windowClosing(WindowEvent e) {
                 NetworkManager.getInstance().sendEndMessages();
                 Table.getInstance().setNetPlay(false);
+
+                if (!isHost) {
+                    Table.getInstance().flipBoard();
+                }
+
                 super.windowClosing(e);
             }
         });
@@ -167,6 +174,7 @@ public class NetworkDialog extends BaseDialog{
         this.btnConnect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Table.getInstance().flipBoard();
                 client = ChessClient.getInstance();
                 String ip = txtIP.getText();
                 int port = txtPort.getText().isEmpty() ? 0 : Integer.valueOf(txtPort.getText());

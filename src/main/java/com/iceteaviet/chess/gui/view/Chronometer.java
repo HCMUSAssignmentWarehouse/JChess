@@ -1,5 +1,8 @@
 package main.java.com.iceteaviet.chess.gui.view;
 
+import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -23,7 +26,10 @@ public class Chronometer extends JPanel implements BaseView {
     private JLabel lblClock;
 
     private String name;
+    private Alliance alliance;
     private Timer timer;
+    private int offset = -1;
+    OnTimeOutListener mListener;
 
 
     public Chronometer(String name) {
@@ -39,9 +45,52 @@ public class Chronometer extends JPanel implements BaseView {
         });
     }
 
+    public void setOnTimeOutListener(OnTimeOutListener listener) {
+        this.mListener = listener;
+    }
+
     public void start() {
         if (timer != null && !timer.isRunning())
             timer.start();
+    }
+
+    public void stop() {
+        if (timer != null && timer.isRunning())
+            timer.stop();
+    }
+
+    public void pause() {
+        if (timer != null && timer.isRunning()){
+            //Is running
+            offset = 0;
+        }
+    }
+
+    public void resume() {
+        if (timer != null && timer.isRunning()){
+            //Is running
+            offset = -1;
+        }
+    }
+
+    public void startOrResume(){
+        if (timer != null) {
+            if (timer.isRunning()) {
+                offset = -1;
+            }
+            else {
+                timer.start();
+            }
+        }
+    }
+
+
+    public Alliance getAlliance() {
+        return alliance;
+    }
+
+    public void setAlliance(Alliance alliance) {
+        this.alliance = alliance;
     }
 
     public void setRemainingSecond(int remainingSecond) {
@@ -71,12 +120,13 @@ public class Chronometer extends JPanel implements BaseView {
     }
 
     private void updateClock() {
-        remainingSecond--;
+        remainingSecond += offset;
         lblClock.setText(getClockDisplayText(remainingSecond));
 
         if (remainingSecond <= 0) {
             //Time's up!
-
+            timer.stop();
+            MessageBox.showInfo("Time's up! " + alliance.name() + " has lost the game!", "Chess Timer");
         }
     }
 
@@ -122,5 +172,9 @@ public class Chronometer extends JPanel implements BaseView {
     @Override
     public void initData() {
 
+    }
+
+    public interface OnTimeOutListener {
+        public void onTimedOut(Alliance alliance);
     }
 }
