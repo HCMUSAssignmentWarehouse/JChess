@@ -18,5 +18,6 @@ public class UIConstants {
     public static final Color PRIMARY_COLOR = Color.decode("#ff9800");
     public static final Color PRIMARY_COLOR_DARK = Color.decode("#ef6c00");
     public static final Color PRIMARY_BG_COLOR = Color.decode("#616161");
-    public static final String MATERIAL_TOOLBAR_COLOR = "#2196F2";
+    public static final Color MATERIAL_TOOLBAR_COLOR = Color.decode("#2196F2");
+    public static final Color PRIMARY_BORDER_COLOR = Color.decode("#8B4726");
 }

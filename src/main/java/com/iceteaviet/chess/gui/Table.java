@@ -1,8 +1,8 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
-import main.java.com.iceteaviet.chess.algorithms.MiniMax;
-import main.java.com.iceteaviet.chess.algorithms.MoveAlgorithm;
+import javafx.scene.control.Tab;
+import main.java.com.iceteaviet.chess.algorithms.ChessAI;
 import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
@@ -18,6 +18,7 @@ import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
 import main.java.com.iceteaviet.chess.network.NetworkManager;
+import main.res.values.string;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
@@ -53,7 +53,7 @@ public class Table extends Observable {
     private Move computerMove;
 
     private Table() {
-        this.gameFrame = new MainFrame("Arthur Chess");
+        this.gameFrame = new MainFrame(string.game_name);
         this.chessBoard = Board.createStandardBoard();
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
@@ -114,7 +114,6 @@ public class Table extends Observable {
         Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
         Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
         Table.getInstance().getBoardPanel().drawBoard(chessBoard);
-        //Table.getInstance().getDebugPanel().redo();
     }
 
     public void setupUpdate(final GameSetupDialog gameSetupDialog) {
@@ -174,7 +173,7 @@ public class Table extends Observable {
         this.computerMove = move;
     }
 
-    private void moveMadeUpdate(PlayerType playerType) {
+    public void moveMadeUpdate(PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
     }
@@ -190,6 +189,11 @@ public class Table extends Observable {
     public void flipBoard() {
         boardDirection = boardDirection.opposites();
         boardPanel.drawBoard(chessBoard);
+    }
+
+    public void onEndGame() {
+        Table.getInstance().rightMenuPanel.getChronometerB().stop();
+        Table.getInstance().rightMenuPanel.getChronometerW().stop();
     }
 
     public void drawBoardAfterMove() {
@@ -249,54 +253,23 @@ public class Table extends Observable {
             if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer())
                     && !Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()
                     && !Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
-                final AIAsyncWorkerTask thinkTank = new AIAsyncWorkerTask();
-                thinkTank.execute();
+                ChessAI.getInstance(Table.getInstance().gameSetupDialog.isAlphaBetaStock()).move();
             }
 
             if (Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()) {
                 System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!");
                 MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!", "Game Over");
+                Table.getInstance().onEndGame();
             }
             if (Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
                 System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!");
                 MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!", "Game Over");
+                Table.getInstance().onEndGame();
             }
         }
     }
 
-    private static class AIAsyncWorkerTask extends SwingWorker<Move, String> {
-        private AIAsyncWorkerTask() {
 
-        }
-
-        @Override
-        protected Move doInBackground() throws Exception {
-            //Find best move for AI
-            final MoveAlgorithm minimax = new MiniMax(4);
-            final Move bestMove = minimax.execute(Table.getInstance().getGameBoard(), 4);
-            return bestMove;
-        }
-
-        @Override
-        protected void done() {
-            try {
-                final Move bestMove = get();
-                Table.getInstance().updateComputerMove(bestMove);
-                Table.getInstance().updateGameBoard(Table.getInstance().getGameBoard().getCurrentPlayer().makeMove(bestMove).getTransitionBoard());
-                Table.getInstance().getMoveLog().addMove(bestMove);
-                Table.getInstance().getGameHistoryPanel().redo(Table.getInstance().getGameBoard(), Table.getInstance().getMoveLog());
-                Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-                Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
-                //TODO: Redo debug panel
-                Table.getInstance().moveMadeUpdate(PlayerType.COMPUTER);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public static class MoveLog {
         private final List<Move> moves;
@@ -330,7 +303,7 @@ public class Table extends Observable {
         }
     }
 
-    private class BoardPanel extends JPanel {
+    public class BoardPanel extends JPanel {
         final List<TilePanel> boardTiles;
 
         BoardPanel() {
@@ -344,7 +317,7 @@ public class Table extends Observable {
             System.out.print(this.boardTiles.size());
             setPreferredSize(UIConstants.BOARD_PANEL_DIMENSION);
             setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-            setBackground(Color.decode("#8B4726"));
+            setBackground(UIConstants.PRIMARY_BORDER_COLOR);
             validate();
         }
 
@@ -393,7 +366,7 @@ public class Table extends Observable {
                                         && !sourceTile.getPiece().getPieceAlliance().equals(mainPlayer.getAlliance())) {
                                     //Opponent chess
                                     sourceTile = null;
-                                    MessageBox.showWarning("You cannot move opponent's chess","Chess network play");
+                                    MessageBox.showWarning(string.warning_cannot_move_opponent_chess, string.chess_network_play);
                                     return;
                                 }
                                 else {
@@ -401,7 +374,7 @@ public class Table extends Observable {
                                     if (!NetworkManager.getInstance().isConnected()) {
                                         //But connection between server and client is not established
                                         sourceTile = null;
-                                        MessageBox.showWarning("Please wait for other player to connect!", "Chess network play");
+                                        MessageBox.showWarning(string.warning_wait_connection, string.chess_network_play);
                                         return;
                                     }
                                 }
@@ -492,7 +465,7 @@ public class Table extends Observable {
                     add(new JLabel(icon));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    MessageBox.showErrorByException("Unable to load piece icon from resources!", e);
+                    MessageBox.showErrorByException(string.error_cannot_load_image, e);
                 }
             }
         }

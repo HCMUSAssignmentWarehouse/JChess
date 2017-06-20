@@ -24,6 +24,7 @@ public class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    private final Move transitionMove;
 
     private static final Board STANDARD_BOARD = createStandardBoard();
 
@@ -38,6 +39,7 @@ public class Board {
         whitePlayer = new WhitePlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         blackPlayer = new BlackPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.currentPlayer = builder.nextMoveMaker.choosePlayer(this.whitePlayer, this.blackPlayer);
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.createMove(null, -1, -1);
     }
 
     public static Board getStandardBoard() {
@@ -107,6 +109,10 @@ public class Board {
             result.add(String.format("%3s", tileText));
         }
         return result;
+    }
+
+    public Move getTransitionMove() {
+        return this.transitionMove;
     }
 
     public Pawn getEnPassantPawn() {
@@ -190,6 +196,7 @@ public class Board {
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
         private Pawn enPassantPawn;
+        Move transitionMove;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -211,6 +218,11 @@ public class Board {
 
         public void setEnPassantPawn(Pawn enPassantPawn) {
             this.enPassantPawn = enPassantPawn;
+        }
+
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
+            return this;
         }
     }
 }

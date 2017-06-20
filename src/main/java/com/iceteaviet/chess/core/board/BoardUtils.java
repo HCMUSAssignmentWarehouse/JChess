@@ -6,6 +6,7 @@ import main.java.com.iceteaviet.chess.core.piece.King;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,5 +120,29 @@ public class BoardUtils {
 
     public int getCoordinateAtPosition(final String position) {
         return POSITION_TO_COORDINATE.get(position);
+    }
+
+    public static int mvvlva(final Move move) {
+
+        final Piece movingPiece = move.getMovedPiece();
+
+        if(move.isAttack()) {
+            final Piece attackedPiece = move.getAttackedPiece();
+            return (attackedPiece.getPieceValue() - movingPiece.getPieceValue() +  Piece.PieceType.KING.getPieceValue()) * 100;
+        }
+
+        return Piece.PieceType.KING.getPieceValue() - movingPiece.getPieceValue();
+    }
+
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while(currentMove != Move.MoveFactory.createMove(null, -1, -1) && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return ImmutableList.copyOf(moveHistory);
     }
 }

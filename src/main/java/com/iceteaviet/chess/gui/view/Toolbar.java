@@ -41,7 +41,7 @@ public class Toolbar extends JPanel implements BaseView {
     public void initLayoutView() {
        setLayout(new BorderLayout());
        setPreferredSize(new Dimension(defaultWidth, defaultHeight));
-        setBackground(Color.decode(UIConstants.MATERIAL_TOOLBAR_COLOR));
+        setBackground(UIConstants.MATERIAL_TOOLBAR_COLOR);
         //setLayout(new BorderLayout());
 
         if (mainToolbar) {
