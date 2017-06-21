@@ -1,4 +1,4 @@
-package main.java.com.iceteaviet.chess.core;
+package main.java.com.iceteaviet.chess.core.player;
 
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
 import main.java.com.iceteaviet.chess.core.player.BlackPlayer;

@@ -1,5 +1,7 @@
 package main.java.com.iceteaviet.chess.core;
 
+import main.java.com.iceteaviet.chess.core.player.Alliance;
+
 /**
  * Constants is an interface consisting of useful values.
  *

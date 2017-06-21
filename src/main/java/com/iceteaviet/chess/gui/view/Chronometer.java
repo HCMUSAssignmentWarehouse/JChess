@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.view;
 
-import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 
 import javax.swing.*;

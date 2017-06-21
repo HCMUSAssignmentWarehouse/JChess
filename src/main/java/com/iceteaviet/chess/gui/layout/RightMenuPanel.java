@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
-import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.gui.view.Chronometer;

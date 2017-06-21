@@ -2,7 +2,6 @@ package main.java.com.iceteaviet.chess.core.player;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.piece.King;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
