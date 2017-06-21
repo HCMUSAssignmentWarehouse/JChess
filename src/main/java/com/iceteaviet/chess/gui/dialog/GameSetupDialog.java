@@ -18,8 +18,8 @@ import java.awt.event.ActionListener;
 
 
 public class GameSetupDialog extends BaseDialog {
-    private ChessGameWatcher.PlayerType whitePlayerType;
-    private ChessGameWatcher.PlayerType blackPlayerType;
+    private ChessGameWatcher.PlayerType whitePlayerType = ChessGameWatcher.PlayerType.HUMAN;
+    private ChessGameWatcher.PlayerType blackPlayerType = ChessGameWatcher.PlayerType.COMPUTER;
     private JSpinner searchDepthSpinner;
     private JRadioButton btnAlphaBeta;
 
@@ -40,7 +40,7 @@ public class GameSetupDialog extends BaseDialog {
         final ButtonGroup blackGroup = new ButtonGroup();
         blackGroup.add(blackHumanButton);
         blackGroup.add(blackComputerButton);
-        blackHumanButton.setSelected(true);
+        blackComputerButton.setSelected(true); //Default black player is AI
 
         btnAlphaBeta = new JRadioButton(string.alpha_beta_name);
         btnAlphaBeta.setSelected(true);

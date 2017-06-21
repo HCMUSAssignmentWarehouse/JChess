@@ -85,8 +85,7 @@ public abstract class Player {
     }
 
     public boolean isCastled() {
-        //TODO: Update king to getInstance is castled info
-        return false;
+        return this.playerKing.isCastled();
     }
 
     public boolean isKingSideCastleCapable() {

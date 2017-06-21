@@ -1,5 +1,6 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
@@ -74,7 +75,15 @@ public class ChessAI {
                 ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
                 ChessGameWatcher.getInstance().getBoardPanel().drawBoard(ChessGameWatcher.getInstance().getGameBoard());
                 ChessGameWatcher.getInstance().moveMadeUpdate(ChessGameWatcher.PlayerType.COMPUTER);
-
+                //Switch the clock
+                if (bestMove.getMovedPiece().getAlliance().equals(Alliance.WHITE)) {
+                    //White finished moving, now turn on the black clock
+                    ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerW().pause();
+                    ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerB().startOrResume();
+                } else {
+                    ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerB().pause();
+                    ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerW().startOrResume();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

@@ -1,5 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
@@ -52,7 +53,7 @@ public class MainFrame extends BaseFrame {
                 lblUndo.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        //TODO: Undo
+                        //TODO: Restart AI when undo
                         if (ChessGameWatcher.getInstance().getMoveLog().size() > 0) {
                             ChessGameWatcher.getInstance().undoLastMove();
                         }
@@ -216,8 +217,10 @@ public class MainFrame extends BaseFrame {
         gameRenewMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                //TODO: Re-new the game
-
+                ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerW().stop();
+                ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerB().stop();
+                ChessGameWatcher.getInstance().updateGameBoard(GameBoard.createStandardBoard());
+                ChessGameWatcher.getInstance().show();
             }
 
         });
@@ -284,8 +287,7 @@ public class MainFrame extends BaseFrame {
                 final Color colorChoice = JColorChooser.showDialog(ChessGameWatcher.getInstance().getMainGameFrame(), "Choose Dark Tile Color",
                         ChessGameWatcher.getInstance().getMainGameFrame().getBackground());
                 if (colorChoice != null) {
-                    //TODO: Set chess gameBoard dark color
-                    //ChessGameWatcher.getInstance().getBoardPanel().setTileDarkColor(chessBoard, colorChoice);
+                    ChessGameWatcher.getInstance().getBoardPanel().setTileDarkColor(colorChoice);
                 }
             }
         });
@@ -296,8 +298,7 @@ public class MainFrame extends BaseFrame {
                 final Color colorChoice = JColorChooser.showDialog(ChessGameWatcher.getInstance().getMainGameFrame(), "Choose Light Tile Color",
                         ChessGameWatcher.getInstance().getMainGameFrame().getBackground());
                 if (colorChoice != null) {
-                    //TODO: Set chess gameBoard light color
-                    //ChessGameWatcher.getInstance().getBoardPanel().setTileLightColor(chessBoard, colorChoice);
+                    ChessGameWatcher.getInstance().getBoardPanel().setTileLightColor(colorChoice);
                 }
             }
         });
@@ -307,7 +308,7 @@ public class MainFrame extends BaseFrame {
             public void actionPerformed(final ActionEvent e) {
                 System.out.println("implement me");
                 //TODO: Change highlight color
-                //ChessGameWatcher.getInstance().getGameFrame().repaint();
+                repaint();
             }
         });
 

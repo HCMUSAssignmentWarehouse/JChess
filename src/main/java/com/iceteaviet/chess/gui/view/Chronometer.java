@@ -15,8 +15,9 @@ import java.awt.event.ActionListener;
  */
 public class Chronometer extends JPanel implements BaseView {
 
-    private static final int DEFAULT_REMAINING_SECOND = 300;
+    private static final int DEFAULT_REMAINING_SECOND = 20 * 60;
     OnTimeOutListener mListener;
+    private long remainingSecondPersistent = DEFAULT_REMAINING_SECOND;
     private long remainingSecond = DEFAULT_REMAINING_SECOND; //Default is 5 mins
     private JLabel lblName;
     private JLabel lblClock;
@@ -44,13 +45,18 @@ public class Chronometer extends JPanel implements BaseView {
     }
 
     public void start() {
-        if (timer != null && !timer.isRunning())
+        if (timer != null && !timer.isRunning()) {
             timer.start();
+            remainingSecond += offset;
+        }
     }
 
     public void stop() {
-        if (timer != null && timer.isRunning())
+        if (timer != null && timer.isRunning()) {
             timer.stop();
+            resetRemainingSecond();
+            updateClock();
+        }
     }
 
     public void pause() {
@@ -73,8 +79,23 @@ public class Chronometer extends JPanel implements BaseView {
                 offset = -1;
             } else {
                 timer.start();
+                remainingSecond += offset;
             }
         }
+    }
+
+    public boolean isRunning() {
+        if (timer != null && timer.isRunning()) {
+            if (offset == -1)
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public void resetRemainingSecond() {
+        this.remainingSecond = remainingSecondPersistent;
     }
 
 
@@ -94,6 +115,7 @@ public class Chronometer extends JPanel implements BaseView {
         if (remainingSecond < 0)
             remainingSecond = DEFAULT_REMAINING_SECOND;
         this.remainingSecond = remainingSecond;
+        this.remainingSecondPersistent = remainingSecond;
     }
 
     public void setClockBorder(Border border) {
@@ -113,14 +135,14 @@ public class Chronometer extends JPanel implements BaseView {
     }
 
     private void updateClock() {
-        remainingSecond += offset;
-        lblClock.setText(getClockDisplayText(remainingSecond));
-
-        if (remainingSecond <= 0) {
+        if (remainingSecond < 0) {
             //Time's up!
             timer.stop();
             MessageBox.showInfo("Time's up! " + alliance.name() + " has lost the game!", "Chess Timer");
+            return;
         }
+        lblClock.setText(getClockDisplayText(remainingSecond));
+        remainingSecond += offset;
     }
 
     private String getClockDisplayText(long second) {

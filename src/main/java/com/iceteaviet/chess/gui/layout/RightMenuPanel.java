@@ -8,6 +8,8 @@ import main.java.com.iceteaviet.chess.gui.view.Chronometer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**
@@ -19,6 +21,8 @@ public class RightMenuPanel extends JPanel {
     JButton btnPause;
     private Chronometer chronometerW = new Chronometer("Player White");
     private Chronometer chronometerB = new Chronometer("Player Black");
+    private boolean isPausing = false;
+    private Chronometer pausedTimer = null;
 
     public RightMenuPanel() {
         super();
@@ -59,6 +63,39 @@ public class RightMenuPanel extends JPanel {
         add(timerPanel);
         add(gameHistoryPanel);
         add(chatPanel);
+
+        btnPause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isPausing) {
+                    if (pausedTimer != null)
+                        pausedTimer.resume();
+                    btnPause.setText("Pause Game");
+                    try {
+                        ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "pause.png", 24, 24);
+                        btnPause.setIcon(icon);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    isPausing = false;
+                } else {
+                    if (chronometerB.isRunning())
+                        pausedTimer = chronometerB;
+                    if (chronometerW.isRunning()) {
+                        pausedTimer = chronometerW;
+                    }
+                    pausedTimer.pause();
+                    btnPause.setText("Resume Game");
+                    try {
+                        ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "pause.png", 24, 24);
+                        btnPause.setIcon(icon);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    isPausing = true;
+                }
+            }
+        });
     }
 
     public Chronometer getChronometerW() {

@@ -10,7 +10,6 @@ import java.net.Socket;
  * Created by Genius Doan on 6/15/2017.
  * this class represents an end-point on a network
  * <p>
- * TODO: Consider extends Thread or Runable to make multi-threading
  */
 public abstract class NetworkEndPoint extends Thread {
     public static final int STATUS_CONNECTED = 1;
