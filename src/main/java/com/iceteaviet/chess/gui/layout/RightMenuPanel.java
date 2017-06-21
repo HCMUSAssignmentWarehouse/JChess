@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
-import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.gui.view.Chronometer;
@@ -14,12 +14,11 @@ import java.io.IOException;
  * Created by Genius Doan on 6/14/2017.
  */
 public class RightMenuPanel extends JPanel {
-    private Chronometer chronometerW = new Chronometer("Player White");
-    private Chronometer chronometerB = new Chronometer("Player Black");
-
     GameHistoryPanel gameHistoryPanel;
     ChatPanel chatPanel;
     JButton btnPause;
+    private Chronometer chronometerW = new Chronometer("Player White");
+    private Chronometer chronometerB = new Chronometer("Player Black");
 
     public RightMenuPanel() {
         super();

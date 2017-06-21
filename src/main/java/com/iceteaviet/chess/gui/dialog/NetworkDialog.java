@@ -4,6 +4,7 @@ import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.network.*;
+import main.res.values.string;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,8 +20,7 @@ import java.net.UnknownHostException;
 /**
  * Created by Genius Doan on 6/16/2017.
  */
-public class NetworkDialog extends BaseDialog{
-    private boolean isHost = false;
+public class NetworkDialog extends BaseDialog {
     ChessServer server;
     ChessClient client;
     JTextField txtIP;
@@ -29,13 +29,14 @@ public class NetworkDialog extends BaseDialog{
     JButton btnConnect;
     JLabel lblIPInfo;
     JLabel lblPortInfo;
+    private boolean isHost = false;
 
     public NetworkDialog(JFrame parent, boolean isHost) {
         super(parent, false);
         this.width = 440;
         this.height = 240;
         setLocationRelativeTo(null);
-        setLocation(900,0);
+        setLocation(900, 0);
         setSize(new Dimension(width, height));
         this.isHost = isHost;
         ChessGameWatcher.getInstance().setNetPlay(true);
@@ -68,10 +69,10 @@ public class NetworkDialog extends BaseDialog{
         setLayout(new BorderLayout());
         setShowToolbar(true, true);
 
-        toolbar.setTitle("Finding chess opponent");
+        toolbar.setTitle(string.toolbar_server_title);
 
         lblLoad = new JLabel("Loading...", JLabel.CENTER);
-        lblLoad.setBorder(new EmptyBorder(12,8,8,8));
+        lblLoad.setBorder(new EmptyBorder(12, 8, 8, 8));
         try {
             ImageIcon icon = UIUtils.getGifIconFromResource(this.getClass(), "loader.gif", 64, 64);
             lblLoad.setIcon(icon);
@@ -79,11 +80,11 @@ public class NetworkDialog extends BaseDialog{
             ex.printStackTrace();
         }
 
-        JPanel hostInfoPanel = new JPanel(new GridLayout(3,2));
-        hostInfoPanel.setBorder(new EmptyBorder(4,32,8,32));
+        JPanel hostInfoPanel = new JPanel(new GridLayout(3, 2));
+        hostInfoPanel.setBorder(new EmptyBorder(4, 32, 8, 32));
         JLabel lblHost = new JLabel("Host Information");
         lblHost.setSize(new Dimension(width, 32));
-        lblHost.setBorder(new EmptyBorder(4,8,4,8));
+        lblHost.setBorder(new EmptyBorder(4, 8, 4, 8));
         lblHost.setBackground(UIConstants.PRIMARY_BG_COLOR);
         lblHost.setForeground(Color.WHITE);
         lblHost.setOpaque(true);
@@ -126,15 +127,15 @@ public class NetworkDialog extends BaseDialog{
 
         txtIP = new JTextField();
         txtIP.setBounds(MARGIN + 140, MARGIN_TOP, 160, 24);
-        txtIP.setPreferredSize(new Dimension(160,24));
+        txtIP.setPreferredSize(new Dimension(160, 24));
 
         txtPort = new JTextField();
         txtPort.setBounds(MARGIN + 140, MARGIN_TOP + LINE_HEIGHT, 160, 24);
-        txtPort.setPreferredSize(new Dimension(160,24));
+        txtPort.setPreferredSize(new Dimension(160, 24));
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(null);
-        inputPanel.setBounds(16,16, width - 16*2, height - 100);
+        inputPanel.setBounds(16, 16, width - 16 * 2, height - 100);
         inputPanel.add(lblIP);
         inputPanel.add(lblPort);
         inputPanel.add(txtIP);
@@ -146,7 +147,7 @@ public class NetworkDialog extends BaseDialog{
         btnConnect.setHorizontalAlignment(SwingConstants.CENTER);
         btnConnect.setBackground(UIConstants.PRIMARY_BG_COLOR);
         btnConnect.setForeground(Color.WHITE);
-        UIUtils.setEmptyBorder(btnConnect, 4 ,20 ,4 ,20);
+        UIUtils.setEmptyBorder(btnConnect, 4, 20, 4, 20);
         try {
             ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "lan-connect.png", 24, 24);
             btnConnect.setIcon(icon);
@@ -200,11 +201,9 @@ public class NetworkDialog extends BaseDialog{
     @Override
     public void initLayoutView() {
         //super.initLayoutView();
-        if (isHost)
-        {
+        if (isHost) {
             inflateHostLayout();
-        }
-        else {
+        } else {
             inflateClientLayout();
         }
     }

@@ -30,7 +30,7 @@ public class PawnChessAnalyzer {
     private static Collection<Piece> calculatePlayerPawns(final Player player) {
         final List<Piece> playerPawnLocations = new ArrayList<>(8);
         for (final Piece piece : player.getActivePiece()) {
-            if (piece.getPieceType().equals(Piece.PieceType.PAWN)) {
+            if (piece.getType().equals(Piece.PieceType.PAWN)) {
                 playerPawnLocations.add(piece);
             }
         }
@@ -61,7 +61,7 @@ public class PawnChessAnalyzer {
     private static ListMultimap<Integer, Piece> createPawnColumnTable(final Collection<Piece> playerPawns) {
         final ListMultimap<Integer, Piece> table = ArrayListMultimap.create(8, 5);
         for (final Piece playerPawn : playerPawns) {
-            table.put(playerPawn.getPiecePosition() % 8, playerPawn);
+            table.put(playerPawn.getPosition() % 8, playerPawn);
         }
         return table;
     }

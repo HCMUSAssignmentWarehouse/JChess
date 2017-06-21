@@ -1,6 +1,7 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
+import main.res.values.string;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 /**
  * UIUtils is an utilities to help us manage and develop UI easier
- *
+ * <p>
  * Created by Genius Doan on 6/11/2017.
  */
 public class UIUtils {
@@ -46,7 +47,7 @@ public class UIUtils {
         BufferedImage img = ImageIO.read(context.getClassLoader().getResource(UIConstants.DEFAULT_ICON_RESOURCE_PATH + fileName));
 
         if (img == null) {
-            MessageBox.showError("Can not load icon " + fileName + " from resources!", "Can't read input file");
+            MessageBox.showError("Can not load icon " + fileName + " from resources!", string.cannot_read_resource);
             img = ImageIO.read(context.getResource(UIConstants.DEFAULT_ICON_RESOURCE_PATH + "placeholder.png"));
         }
         return new ImageIcon(img);

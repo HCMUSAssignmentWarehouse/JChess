@@ -5,10 +5,10 @@ package main.java.com.iceteaviet.chess.gui.dialog;
  */
 
 import main.java.com.iceteaviet.chess.algorithms.ChessAI;
-import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Player;
-import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
+import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.res.values.string;
 
 import javax.swing.*;

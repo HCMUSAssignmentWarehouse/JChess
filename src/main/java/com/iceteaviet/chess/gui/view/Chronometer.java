@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.view;
 
-import main.java.com.iceteaviet.chess.core.Alliance;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 
 import javax.swing.*;
@@ -9,11 +9,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.text.DateFormat;
-import java.util.Date;
 
 /**
  * Created by Genius Doan on 6/14/2017.
@@ -21,15 +16,14 @@ import java.util.Date;
 public class Chronometer extends JPanel implements BaseView {
 
     private static final int DEFAULT_REMAINING_SECOND = 300;
+    OnTimeOutListener mListener;
     private long remainingSecond = DEFAULT_REMAINING_SECOND; //Default is 5 mins
     private JLabel lblName;
     private JLabel lblClock;
-
     private String name;
     private Alliance alliance;
     private Timer timer;
     private int offset = -1;
-    OnTimeOutListener mListener;
 
 
     public Chronometer(String name) {
@@ -60,25 +54,24 @@ public class Chronometer extends JPanel implements BaseView {
     }
 
     public void pause() {
-        if (timer != null && timer.isRunning()){
+        if (timer != null && timer.isRunning()) {
             //Is running
             offset = 0;
         }
     }
 
     public void resume() {
-        if (timer != null && timer.isRunning()){
+        if (timer != null && timer.isRunning()) {
             //Is running
             offset = -1;
         }
     }
 
-    public void startOrResume(){
+    public void startOrResume() {
         if (timer != null) {
             if (timer.isRunning()) {
                 offset = -1;
-            }
-            else {
+            } else {
                 timer.start();
             }
         }
@@ -93,14 +86,14 @@ public class Chronometer extends JPanel implements BaseView {
         this.alliance = alliance;
     }
 
+    public long getRemainingSecond() {
+        return remainingSecond;
+    }
+
     public void setRemainingSecond(int remainingSecond) {
         if (remainingSecond < 0)
             remainingSecond = DEFAULT_REMAINING_SECOND;
         this.remainingSecond = remainingSecond;
-    }
-
-    public long getRemainingSecond() {
-        return remainingSecond;
     }
 
     public void setClockBorder(Border border) {
@@ -134,10 +127,10 @@ public class Chronometer extends JPanel implements BaseView {
         int seconds = 0;
         int minutes = 0;
 
-        seconds = (int) (second%60); //Get the seconds
+        seconds = (int) (second % 60); //Get the seconds
         second -= seconds;
 
-        minutes = (int) (second/60);
+        minutes = (int) (second / 60);
 
         String res = "";
 
@@ -152,13 +145,13 @@ public class Chronometer extends JPanel implements BaseView {
     public void initLayoutView() {
         setLayout(new BorderLayout());
         lblName = new JLabel(name);
-        lblName.setBorder(new EmptyBorder(8,8,8,8));
+        lblName.setBorder(new EmptyBorder(8, 8, 8, 8));
         lblName.setOpaque(true);
         lblName.setBackground(Color.BLACK);
         lblName.setForeground(Color.WHITE);
 
         lblClock = new JLabel(getClockDisplayText(remainingSecond));
-        lblClock.setBorder(new EmptyBorder(8,8,8,8));
+        lblClock.setBorder(new EmptyBorder(8, 8, 8, 8));
         lblClock.setFont(new Font("San-serif", Font.BOLD, 16));
         lblClock.setHorizontalAlignment(SwingConstants.CENTER);
         lblClock.setBackground(Color.WHITE);

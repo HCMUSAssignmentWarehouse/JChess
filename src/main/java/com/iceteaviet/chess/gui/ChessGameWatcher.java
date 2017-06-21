@@ -2,12 +2,12 @@ package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
 import main.java.com.iceteaviet.chess.algorithms.ChessAI;
-import main.java.com.iceteaviet.chess.core.Alliance;
-import main.java.com.iceteaviet.chess.core.board.Board;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.board.Tile;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
 import main.java.com.iceteaviet.chess.core.player.Player;
 import main.java.com.iceteaviet.chess.gui.dialog.GameSetupDialog;
@@ -31,8 +31,8 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 /**
- * ChessGameWatcher
- *
+ * ChessGameWatcher is an game manager, it controls all flow of chess game
+ * <p>
  * Created by MyPC on 5/12/2017.
  */
 public class ChessGameWatcher extends Observable {
@@ -43,19 +43,19 @@ public class ChessGameWatcher extends Observable {
     private final RightMenuPanel rightMenuPanel;
     private final MoveLog moveLog;
     private final GameSetupDialog gameSetupDialog;
-    private Board chessBoard;
+    private GameBoard chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
-    private boolean highLightLegalMoves = true;
+    private boolean highlightLegalMoves = true;
     private Player mainPlayer; //Bottom side player
     private boolean isNetPlay = false;
     private Move computerMove;
 
     private ChessGameWatcher() {
         this.gameFrame = new MainFrame(string.game_name);
-        this.chessBoard = Board.createStandardBoard();
+        this.chessBoard = GameBoard.createStandardBoard();
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.rightMenuPanel = new RightMenuPanel();
@@ -95,12 +95,11 @@ public class ChessGameWatcher extends Observable {
             moveLog.addMove(move);
 
             //Switch the clock
-            if (move.getMovedPiece().getPieceAlliance().equals(Alliance.WHITE)) {
+            if (move.getMovedPiece().getAlliance().equals(Alliance.WHITE)) {
                 //White finished moving, now turn on the black clock
                 this.getRightMenuPanel().getChronometerW().pause();
                 this.getRightMenuPanel().getChronometerB().startOrResume();
-            }
-            else {
+            } else {
                 this.getRightMenuPanel().getChronometerB().pause();
                 this.getRightMenuPanel().getChronometerW().startOrResume();
             }
@@ -130,15 +129,15 @@ public class ChessGameWatcher extends Observable {
         this.mainPlayer = mainPlayer;
     }
 
-    public void setNetPlay(boolean isNetPlay) {
-        this.isNetPlay = isNetPlay;
-    }
-
     public boolean isNetPlay() {
         return isNetPlay;
     }
 
-    public Board getGameBoard() {
+    public void setNetPlay(boolean isNetPlay) {
+        this.isNetPlay = isNetPlay;
+    }
+
+    public GameBoard getGameBoard() {
         return this.chessBoard;
     }
 
@@ -166,11 +165,11 @@ public class ChessGameWatcher extends Observable {
         return this.boardPanel;
     }
 
-    public void updateGameBoard(final Board board) {
-        this.chessBoard = board;
+    public void updateGameBoard(final GameBoard gameBoard) {
+        this.chessBoard = gameBoard;
     }
 
-    public void updateComputerMove(final Move move) {
+    public void updateAIMove(final Move move) {
         this.computerMove = move;
     }
 
@@ -179,12 +178,12 @@ public class ChessGameWatcher extends Observable {
         notifyObservers(playerType);
     }
 
-    public boolean isHighLightLegalMoves() {
-        return highLightLegalMoves;
+    public boolean isHighlightLegalMoves() {
+        return highlightLegalMoves;
     }
 
-    public void setHighLightLegalMoves(boolean b) {
-        this.highLightLegalMoves = b;
+    public void setHighlightLegalMoves(boolean b) {
+        this.highlightLegalMoves = b;
     }
 
     public void flipBoard() {
@@ -221,18 +220,18 @@ public class ChessGameWatcher extends Observable {
     public enum BoardDirection {
         NORMAL {
             @Override
-            List<TilePanel> travese(List<TilePanel> boardTiles) {
+            List<TilePanel> traverse(List<TilePanel> boardTiles) {
                 return boardTiles;
             }
 
             @Override
             BoardDirection opposites() {
-                return FLPPED;
+                return FLIPPED;
             }
         },
-        FLPPED {
+        FLIPPED {
             @Override
-            List<TilePanel> travese(List<TilePanel> boardTiles) {
+            List<TilePanel> traverse(List<TilePanel> boardTiles) {
                 return Lists.reverse(boardTiles);
             }
 
@@ -242,7 +241,7 @@ public class ChessGameWatcher extends Observable {
             }
         };
 
-        abstract List<TilePanel> travese(final List<TilePanel> boardTiles);
+        abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
 
         abstract BoardDirection opposites();
     }
@@ -269,7 +268,6 @@ public class ChessGameWatcher extends Observable {
             }
         }
     }
-
 
 
     public static class MoveLog {
@@ -310,7 +308,7 @@ public class ChessGameWatcher extends Observable {
         BoardPanel() {
             super(new GridLayout(8, 8));
             this.boardTiles = new ArrayList<>();
-            for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+            for (int i = 0; i < BoardUtils.TILE_COUNT; i++) {
                 final TilePanel tilePanel = new TilePanel(this, i);
                 this.boardTiles.add(tilePanel);
                 add(tilePanel);
@@ -322,10 +320,10 @@ public class ChessGameWatcher extends Observable {
             validate();
         }
 
-        public void drawBoard(final Board board) {
+        public void drawBoard(final GameBoard gameBoard) {
             removeAll();
-            for (final TilePanel tilePanel : boardDirection.travese(boardTiles)) {
-                tilePanel.drawTile(board);
+            for (final TilePanel tilePanel : boardDirection.traverse(boardTiles)) {
+                tilePanel.drawTile(gameBoard);
                 add(tilePanel);
             }
             validate();
@@ -364,13 +362,12 @@ public class ChessGameWatcher extends Observable {
 
                             if (isNetPlay) {
                                 if (sourceTile.getPiece() != null
-                                        && !sourceTile.getPiece().getPieceAlliance().equals(mainPlayer.getAlliance())) {
+                                        && !sourceTile.getPiece().getAlliance().equals(mainPlayer.getAlliance())) {
                                     //Opponent chess
                                     sourceTile = null;
                                     MessageBox.showWarning(string.warning_cannot_move_opponent_chess, string.chess_network_play);
                                     return;
-                                }
-                                else {
+                                } else {
                                     //Same alliance
                                     if (!NetworkManager.getInstance().isConnected()) {
                                         //But connection between server and client is not established
@@ -426,17 +423,17 @@ public class ChessGameWatcher extends Observable {
 
         }
 
-        public void drawTile(final Board board) {
+        public void drawTile(final GameBoard gameBoard) {
             assignTileColor();
-            assignTilePieceIcon(board);
-            highLightLegals(board);
+            assignTilePieceIcon(gameBoard);
+            highLightLegals(gameBoard);
             validate();
             repaint();
         }
 
-        private void highLightLegals(final Board board) {
-            if (highLightLegalMoves) {
-                for (final Move move : pieceLegalMoves(board)) {
+        private void highLightLegals(final GameBoard gameBoard) {
+            if (highlightLegalMoves) {
+                for (final Move move : pieceLegalMoves(gameBoard)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
                             add(new JLabel(UIUtils.getIconFromResources(this.getClass(), "green_dot.png")));
@@ -448,19 +445,19 @@ public class ChessGameWatcher extends Observable {
             }
         }
 
-        private Collection<Move> pieceLegalMoves(final Board board) {
-            if (humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.getCurrentPlayer().getAlliance()) {
-                return humanMovedPiece.calculateLegalMove(board);
+        private Collection<Move> pieceLegalMoves(final GameBoard gameBoard) {
+            if (humanMovedPiece != null && humanMovedPiece.getAlliance() == gameBoard.getCurrentPlayer().getAlliance()) {
+                return humanMovedPiece.calculateLegalMove(gameBoard);
             }
             return Collections.emptyList();
         }
 
-        private void assignTilePieceIcon(final Board board) {
+        private void assignTilePieceIcon(final GameBoard gameBoard) {
             this.removeAll();
-            if (board.getTile(this.tileId).isTileOccupied()) {
+            if (gameBoard.getTile(this.tileId).isTileOccupied()) {
                 try {
-                    String imgName = board.getTile(this.tileId).getPiece().getPieceAllianceLetter()
-                            + board.getTile(this.tileId).getPiece().toString()
+                    String imgName = gameBoard.getTile(this.tileId).getPiece().getAllianceLetter()
+                            + gameBoard.getTile(this.tileId).getPiece().toString()
                             + UIConstants.CHESS_DRAWABLE_EXTENSION;
                     ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
                     add(new JLabel(icon));

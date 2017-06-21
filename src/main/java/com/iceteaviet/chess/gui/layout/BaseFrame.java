@@ -1,7 +1,7 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
-import main.java.com.iceteaviet.chess.gui.view.Toolbar;
 import main.java.com.iceteaviet.chess.gui.view.BaseView;
+import main.java.com.iceteaviet.chess.gui.view.Toolbar;
 
 import javax.swing.*;
 import java.awt.*;

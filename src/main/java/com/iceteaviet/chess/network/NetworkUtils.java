@@ -3,6 +3,8 @@ package main.java.com.iceteaviet.chess.network;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 
 /**
+ * Helper for network stuffs
+ * <p>
  * Created by Genius Doan on 6/17/2017.
  */
 public class NetworkUtils {

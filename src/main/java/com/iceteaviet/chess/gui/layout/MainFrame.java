@@ -246,7 +246,7 @@ public class MainFrame extends BaseFrame {
 
     private JMenu createPreferenceMenu() {
         final JMenu prefrenceMenu = new JMenu("Preferences");
-        JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
+        JMenuItem flipBoardMenuItem = new JMenuItem("Flip GameBoard");
         try {
             ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "flip.png", 24, 24);
             flipBoardMenuItem.setIcon(icon);
@@ -284,7 +284,7 @@ public class MainFrame extends BaseFrame {
                 final Color colorChoice = JColorChooser.showDialog(ChessGameWatcher.getInstance().getMainGameFrame(), "Choose Dark Tile Color",
                         ChessGameWatcher.getInstance().getMainGameFrame().getBackground());
                 if (colorChoice != null) {
-                    //TODO: Set chess board dark color
+                    //TODO: Set chess gameBoard dark color
                     //ChessGameWatcher.getInstance().getBoardPanel().setTileDarkColor(chessBoard, colorChoice);
                 }
             }
@@ -296,7 +296,7 @@ public class MainFrame extends BaseFrame {
                 final Color colorChoice = JColorChooser.showDialog(ChessGameWatcher.getInstance().getMainGameFrame(), "Choose Light Tile Color",
                         ChessGameWatcher.getInstance().getMainGameFrame().getBackground());
                 if (colorChoice != null) {
-                    //TODO: Set chess board light color
+                    //TODO: Set chess gameBoard light color
                     //ChessGameWatcher.getInstance().getBoardPanel().setTileLightColor(chessBoard, colorChoice);
                 }
             }
@@ -313,11 +313,11 @@ public class MainFrame extends BaseFrame {
 
 
         prefrenceMenu.addSeparator();
-        JCheckBoxMenuItem legalMoveHighLighterCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves", ChessGameWatcher.getInstance().isHighLightLegalMoves());
+        JCheckBoxMenuItem legalMoveHighLighterCheckbox = new JCheckBoxMenuItem("Highlight Legal Moves", ChessGameWatcher.getInstance().isHighlightLegalMoves());
         legalMoveHighLighterCheckbox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ChessGameWatcher.getInstance().setHighLightLegalMoves(legalMoveHighLighterCheckbox.isSelected());
+                ChessGameWatcher.getInstance().setHighlightLegalMoves(legalMoveHighLighterCheckbox.isSelected());
             }
         });
 

@@ -1,21 +1,25 @@
 package main.java.com.iceteaviet.chess.core.piece;
 
 import com.google.common.collect.ImmutableList;
-import main.java.com.iceteaviet.chess.core.Alliance;
-import main.java.com.iceteaviet.chess.core.board.Board;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.board.Tile;
+import main.java.com.iceteaviet.chess.core.player.Move;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
+ * Represent for Bishop Piece
+ *
+ * @see Piece
+ * <p>
  * Created by MyPC on 5/10/2017.
  */
 public class Bishop extends Piece {
-    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9};
+    private final static int[] MOVE_VECTOR_CANDIDATE_COORD = {-9, -7, 7, 9};
 
     public Bishop(Alliance pieceAlliance, int piecePosition) {
         super(PieceType.BISHOP, piecePosition, pieceAlliance);
@@ -35,30 +39,28 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Collection<Move> calculateLegalMove(Board board) {
-
+    public Collection<Move> calculateLegalMove(GameBoard gameBoard) {
         final List<Move> legalMoves = new ArrayList<>();
 
-        for (final int candidateCoordinateOffset : CANDIDATE_MOVE_VECTOR_COORDINATES) {
-            int candidateDestinationCoordinate = this.piecePosition;
+        for (final int coordOffset : MOVE_VECTOR_CANDIDATE_COORD) {
+            int destinationCoordCandidate = this.piecePosition;
 
-            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-
-                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) ||
-                        isEightColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
+            while (BoardUtils.isValidTileCoordinate(destinationCoordCandidate)) {
+                if (isFirstColumnExclusion(destinationCoordCandidate, coordOffset) ||
+                        isEightColumnExclusion(destinationCoordCandidate, coordOffset)) {
                     break;
                 }
 
-                candidateDestinationCoordinate += candidateCoordinateOffset;
-                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
-                    if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
+                destinationCoordCandidate += coordOffset;
+                if (BoardUtils.isValidTileCoordinate(destinationCoordCandidate)) {
+                    final Tile destinationTileCandidate = gameBoard.getTile(destinationCoordCandidate);
+                    if (!destinationTileCandidate.isTileOccupied()) {
+                        legalMoves.add(new Move.MajorMove(gameBoard, this, destinationCoordCandidate));
                     } else {
-                        final Piece pieceAtDestination = candidateDestinationTile.getPiece();
-                        final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
+                        final Piece pieceAtDestination = destinationTileCandidate.getPiece();
+                        final Alliance pieceAlliance = pieceAtDestination.getAlliance();
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new Move.MajorAttackMove(board, this, candidateDestinationCoordinate,
+                            legalMoves.add(new Move.MajorAttackMove(gameBoard, this, destinationCoordCandidate,
                                     pieceAtDestination));
                         }
                         break;
@@ -72,8 +74,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Bishop movePiece(final Move move) {
-        return new Bishop(move.getMovedPiece().getPieceAlliance(), move.getDestinationCoordinate());
+    public Bishop move(final Move move) {
+        return new Bishop(move.getMovedPiece().getAlliance(), move.getDestinationCoordinate());
     }
 
     @Override
