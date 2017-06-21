@@ -2,21 +2,25 @@ package main.java.com.iceteaviet.chess.core.piece;
 
 import com.google.common.collect.ImmutableList;
 import main.java.com.iceteaviet.chess.core.Alliance;
-import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.board.Tile;
+import main.java.com.iceteaviet.chess.core.player.Move;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
+ * Represent for Queen Piece
+ *
+ * @see Piece
+ * <p>
  * Created by MyPC on 5/10/2017.
  */
 public class Queen extends Piece {
 
-    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -8, -7, -1, 1, 7, 8, 9};
+    private final static int[] MOVE_VECTOR_CANDIDATE_COORD = {-9, -8, -7, -1, 1, 7, 8, 9};
     private final boolean isFirstMove;
 
     public Queen(Alliance pieceAlliance, int piecePosition) {
@@ -44,31 +48,31 @@ public class Queen extends Piece {
     }
 
     @Override
-    public Collection<Move> calculateLegalMove(Board board) {
+    public Collection<Move> calculateLegalMove(GameBoard gameBoard) {
 
         final List<Move> legalMoves = new ArrayList<>();
 
-        for (final int candidateCoordinateOffset : CANDIDATE_MOVE_VECTOR_COORDINATES) {
-            int candidateDestinationCoordinate = this.piecePosition;
+        for (final int coordOffset : MOVE_VECTOR_CANDIDATE_COORD) {
+            int destinationCoordCandidate = this.piecePosition;
 
-            while (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
+            while (BoardUtils.isValidTileCoordinate(destinationCoordCandidate)) {
 
-                if (isFirstColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset) || isEightColumnExclusion(candidateDestinationCoordinate, candidateCoordinateOffset)) {
+                if (isFirstColumnExclusion(destinationCoordCandidate, coordOffset) || isEightColumnExclusion(destinationCoordCandidate, coordOffset)) {
                     break;
                 }
 
-                candidateDestinationCoordinate += candidateCoordinateOffset;
+                destinationCoordCandidate += coordOffset;
 
-                if (BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
-                    final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
+                if (BoardUtils.isValidTileCoordinate(destinationCoordCandidate)) {
+                    final Tile candidateDestinationTile = gameBoard.getTile(destinationCoordCandidate);
                     if (!candidateDestinationTile.isTileOccupied()) {
-                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
+                        legalMoves.add(new Move.MajorMove(gameBoard, this, destinationCoordCandidate));
                     } else {
                         final Piece pieceDestination = candidateDestinationTile.getPiece();
-                        final Alliance pieceAlliance = pieceDestination.getPieceAlliance();
+                        final Alliance pieceAlliance = pieceDestination.getAlliance();
 
                         if (this.pieceAlliance != pieceAlliance) {
-                            legalMoves.add(new Move.MajorAttackMove(board, this, candidateDestinationCoordinate, pieceDestination));
+                            legalMoves.add(new Move.MajorAttackMove(gameBoard, this, destinationCoordCandidate, pieceDestination));
                         }
                         break;
                     }
@@ -81,8 +85,8 @@ public class Queen extends Piece {
     }
 
     @Override
-    public Queen movePiece(final Move move) {
-        return new Queen(move.getMovedPiece().getPieceAlliance(), move.getDestinationCoordinate());
+    public Queen move(final Move move) {
+        return new Queen(move.getMovedPiece().getAlliance(), move.getDestinationCoordinate());
     }
 
     @Override

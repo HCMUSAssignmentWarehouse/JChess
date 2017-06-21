@@ -6,6 +6,11 @@ import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * ChessClient is an implementation of chess client
+ * <p>
+ * Created by Genius Doan on 6/15/2017.
+ */
 public final class ChessClient extends NetworkEndPoint {
     private static ChessClient mInstance = null;
     private String mIP;

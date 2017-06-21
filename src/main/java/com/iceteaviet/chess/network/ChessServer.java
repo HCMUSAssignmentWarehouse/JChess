@@ -3,10 +3,14 @@ package main.java.com.iceteaviet.chess.network;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 
+
+/**
+ * ChessServer is an implementation of chess server
+ * <p>
+ * Created by Genius Doan on 6/15/2017.
+ */
 public final class ChessServer extends NetworkEndPoint {
 
     private static ChessServer mInstance = null;

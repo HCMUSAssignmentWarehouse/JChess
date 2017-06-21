@@ -1,8 +1,8 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
 import com.google.common.primitives.Ints;
-import main.java.com.iceteaviet.chess.core.board.Move;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
@@ -49,9 +49,9 @@ public class TakenPiecesPanel extends JPanel {
         for (final Move move : moveLog.getMoves()) {
             if (move.isAttack()) {
                 final Piece takenPiece = move.getAttackedPiece();
-                if (takenPiece.getPieceAlliance().isWhite()) {
+                if (takenPiece.getAlliance().isWhite()) {
                     whiteTakenPieces.add(takenPiece);
-                } else if (takenPiece.getPieceAlliance().isBlack()) {
+                } else if (takenPiece.getAlliance().isBlack()) {
                     blackTakenPieces.add(takenPiece);
                 } else {
                     throw new RuntimeException("Should not reach here!");
@@ -62,21 +62,21 @@ public class TakenPiecesPanel extends JPanel {
         Collections.sort(whiteTakenPieces, new Comparator<Piece>() {
             @Override
             public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
+                return Ints.compare(p1.getValue(), p2.getValue());
             }
         });
 
         Collections.sort(blackTakenPieces, new Comparator<Piece>() {
             @Override
             public int compare(final Piece p1, final Piece p2) {
-                return Ints.compare(p1.getPieceValue(), p2.getPieceValue());
+                return Ints.compare(p1.getValue(), p2.getValue());
             }
         });
 
 
         for (final Piece takenPiece : whiteTakenPieces) {
             try {
-                String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
+                String iconName = takenPiece.getAlliance().toString().substring(0, 1)
                         + takenPiece.toString()
                         + UIConstants.CHESS_DRAWABLE_EXTENSION;
                 ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), iconName.toLowerCase(), 40, 40);
@@ -89,7 +89,7 @@ public class TakenPiecesPanel extends JPanel {
 
         for (final Piece takenPiece : blackTakenPieces) {
             try {
-                String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
+                String iconName = takenPiece.getAlliance().toString().substring(0, 1)
                         + takenPiece.toString()
                         + UIConstants.CHESS_DRAWABLE_EXTENSION;
                 final ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), iconName.toLowerCase(), 40, 40);

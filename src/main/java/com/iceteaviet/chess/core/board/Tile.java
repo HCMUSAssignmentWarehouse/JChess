@@ -8,10 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Tile is part of Game Board. It is a cell in game board and It built game board
+ *
+ * @see GameBoard
+ * <p>
  * Created by MyPC on 5/9/2017.
  */
 public abstract class Tile {
-    private static final Map<Integer, EmptyTile> EMPTY_TILE_CACHE = createAllPossipleEmptyTile();
+    private static final Map<Integer, EmptyTile> mEmptyTileCached = createAllPossipleEmptyTile();
     protected final int tileCoordinate;
 
     private Tile(int tileCoordinate) {
@@ -20,14 +24,14 @@ public abstract class Tile {
 
     private static Map<Integer, EmptyTile> createAllPossipleEmptyTile() {
         final Map<Integer, EmptyTile> emptyTileMap = new HashMap<>();
-        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+        for (int i = 0; i < BoardUtils.TILE_COUNT; i++) {
             emptyTileMap.put(i, new EmptyTile(i));
         }
         return ImmutableMap.copyOf(emptyTileMap);
     }
 
     public static Tile createTile(final int tileCoordinate, final Piece piece) {
-        return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILE_CACHE.get(tileCoordinate);
+        return piece != null ? new OccupiedTile(tileCoordinate, piece) : mEmptyTileCached.get(tileCoordinate);
     }
 
     public int getTileCoordinate() {
@@ -71,7 +75,7 @@ public abstract class Tile {
 
         @Override
         public String toString() {
-            return getPiece().getPieceAlliance().isBlack() ? getPiece().toString().toLowerCase() : getPiece().toString();
+            return getPiece().getAlliance().isBlack() ? getPiece().toString().toLowerCase() : getPiece().toString();
         }
 
         @Override

@@ -6,16 +6,22 @@ import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.Constants;
 import main.java.com.iceteaviet.chess.core.piece.*;
 import main.java.com.iceteaviet.chess.core.player.BlackPlayer;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.core.player.Player;
 import main.java.com.iceteaviet.chess.core.player.WhitePlayer;
 
 import java.util.*;
 
 /**
+ * GameBoard is the main game gameBoard of Arthur Chess
+ * It is simply a chess board layout containing all piece positions
+ *
  * Created by MyPC on 5/9/2017.
  */
 
-public class Board {
+public class GameBoard {
+    private static final GameBoard mStandardInstance = createStandardBoard();
+
     private final List<Tile> gameBoard;
     private final Collection<Piece> whitePieces;
     private final Collection<Piece> blackPieces;
@@ -26,9 +32,7 @@ public class Board {
     private final Player currentPlayer;
     private final Move transitionMove;
 
-    private static final Board STANDARD_BOARD = createStandardBoard();
-
-    private Board(Builder builder) {
+    private GameBoard(Builder builder) {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
@@ -42,11 +46,11 @@ public class Board {
         this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.createMove(null, -1, -1);
     }
 
-    public static Board getStandardBoard() {
-        return STANDARD_BOARD;
+    public static GameBoard getStandardGameBoard() {
+        return mStandardInstance;
     }
 
-    public static Board createStandardBoard() {
+    public static GameBoard createStandardBoard() {
         final Builder builder = new Builder();
         builder.setPiece(new Rook(Alliance.BLACK, 0));
         builder.setPiece(new Knight(Alliance.BLACK, 1));
@@ -64,7 +68,6 @@ public class Board {
         builder.setPiece(new Pawn(Alliance.BLACK, 13));
         builder.setPiece(new Pawn(Alliance.BLACK, 14));
         builder.setPiece(new Pawn(Alliance.BLACK, 15));
-
 
         builder.setPiece(new Pawn(Alliance.WHITE, 48));
         builder.setPiece(new Pawn(Alliance.WHITE, 49));
@@ -88,13 +91,21 @@ public class Board {
 
     }
 
+    private static String prettyPrint(final Tile tile) {
+        if (tile.isTileOccupied()) {
+            return tile.getPiece().getAlliance().isBlack() ?
+                    tile.toString().toLowerCase() : tile.toString();
+        }
+        return tile.toString();
+    }
+
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+        for (int i = 0; i < BoardUtils.TILE_COUNT; i++) {
             final String tileText = prettyPrint(this.gameBoard.get(i));
             stringBuilder.append(String.format("%3s", tileText));
-            if ((i + 1) % BoardUtils.NUM_TILES_PER_ROW == 0) {
+            if ((i + 1) % BoardUtils.TILES_PER_ROW == 0) {
                 stringBuilder.append("\n");
             }
         }
@@ -102,9 +113,9 @@ public class Board {
     }
 
     @Deprecated
-    public List<String> getArrayCurrentPeice() {
+    public List<String> getListCurrentPieces() {
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+        for (int i = 0; i < BoardUtils.TILE_COUNT; i++) {
             final String tileText = this.gameBoard.get(i).toString();
             result.add(String.format("%3s", tileText));
         }
@@ -158,7 +169,7 @@ public class Board {
         for (final Tile tile : gameBoard) {
             if (tile.isTileOccupied()) {
                 final Piece piece = tile.getPiece();
-                if (piece.getPieceAlliance() == alliance) {
+                if (piece.getAlliance() == alliance) {
                     activePieces.add(piece);
                 }
             }
@@ -167,8 +178,8 @@ public class Board {
     }
 
     private List<Tile> createGameBoard(Builder builder) {
-        final Tile[] tiles = new Tile[BoardUtils.NUM_TILES];
-        for (int i = 0; i < BoardUtils.NUM_TILES; i++) {
+        final Tile[] tiles = new Tile[BoardUtils.TILE_COUNT];
+        for (int i = 0; i < BoardUtils.TILE_COUNT; i++) {
             tiles[i] = Tile.createTile(i, builder.boardConfig.get(i));
         }
         return ImmutableList.copyOf(tiles);
@@ -183,27 +194,19 @@ public class Board {
         return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
 
-    private static String prettyPrint(final Tile tile) {
-        if(tile.isTileOccupied()) {
-            return tile.getPiece().getPieceAlliance().isBlack() ?
-                    tile.toString().toLowerCase() : tile.toString();
-        }
-        return tile.toString();
-    }
-
+    //Builder pattern to build game board with provided information
     public static class Builder {
-
         Map<Integer, Piece> boardConfig;
         Alliance nextMoveMaker;
-        private Pawn enPassantPawn;
         Move transitionMove;
+        private Pawn enPassantPawn;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
         }
 
         public Builder setPiece(final Piece piece) {
-            this.boardConfig.put(piece.getPiecePosition(), piece);
+            this.boardConfig.put(piece.getPosition(), piece);
             return this;
         }
 
@@ -212,8 +215,8 @@ public class Board {
             return this;
         }
 
-        public Board build() {
-            return new Board(this);
+        public GameBoard build() {
+            return new GameBoard(this);
         }
 
         public void setEnPassantPawn(Pawn enPassantPawn) {

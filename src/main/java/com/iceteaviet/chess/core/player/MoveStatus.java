@@ -1,6 +1,11 @@
 package main.java.com.iceteaviet.chess.core.player;
 
 /**
+ * MoveStatus is status of a movement after doing a transition
+ *
+ * @see MoveTransition
+ * @see Move
+ * <p>
  * Created by MyPC on 5/12/2017.
  */
 public enum MoveStatus {

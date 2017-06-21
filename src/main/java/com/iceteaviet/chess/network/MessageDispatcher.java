@@ -6,6 +6,14 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
+ * MessageDispatcher is an message boardcaster to manage network messages
+ * Connection between input/output message of Chess Client and Chess Server
+ *
+ * @see ChessClient
+ * @see ChessServer
+ * @see ChessChat
+ * @see ChessPlay
+ * <p>
  * Created by Genius Doan on 6/15/2017.
  */
 public class MessageDispatcher implements Runnable {
@@ -37,15 +45,12 @@ public class MessageDispatcher implements Runnable {
             do {
                 // wait for an incoming message
                 if (sock.isClosed()) {
-                    System.out.println("Sock closed");
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
                         listener.onStatusUpdate(NetworkEndPoint.STATUS_ERROR, "Network error! Connection closed.");
                     break;
                 }
-                System.out.println("Waiting for data...");
                 msg = netIn.readLine();
-                System.out.println("msg: " + msg);
 
                 if (msg == null)
                     msg = "";
@@ -57,19 +62,17 @@ public class MessageDispatcher implements Runnable {
                     end.getPlay().receiveMoveMessage(msg);
                 } else if (msg.equals(NetworkConstants.CLIENT_END_ORDER)) {
                     //Client close connection
-                    System.out.println("Receive client end");
                     ChessServer.getInstance().sendEndMessage();
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
                         listener.onStatusUpdate(NetworkEndPoint.STATUS_CLIENT_CLOSED, "Client has disconnected.");
                     break;
                 } else if (msg.equals(NetworkConstants.SERVER_END_ORDER)) {
-                    System.out.println("Receive server end");
                     //Server close connection
                     ChessClient.getInstance().sendEndMessage();
                     NetworkEndPoint.OnNetworkUpdateListener listener = end.getOnNetworkUpdateListener();
                     if (listener != null)
-                        listener.onStatusUpdate(NetworkEndPoint.STATUS_SERVER_CLOSED,"Server has disconnected.");
+                        listener.onStatusUpdate(NetworkEndPoint.STATUS_SERVER_CLOSED, "Server has disconnected.");
                     break;
                 } else {
                     System.out.println("Error: malformed packet " + msg + " in MessageDispatcher!!!!!");

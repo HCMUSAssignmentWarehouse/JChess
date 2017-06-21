@@ -1,10 +1,11 @@
 package main.java.com.iceteaviet.chess.core;
 
 /**
+ * Constants is an interface consisting of useful values.
+ *
  * Created by Genius Doan on 6/13/2017.
  */
 public interface Constants {
-
     // Piece types
     byte TYPE_PAWN = 0;
     byte TYPE_ROOK = 1;
@@ -17,7 +18,7 @@ public interface Constants {
     String[] NAME = {"Pa", "Kn", "Bi", "Ro", "Qu", "Ki"};
     String[] TYPE = {"", "N", "B", "R", "Q", "K"};
     String[] COORD_X = {"a", "b", "c", "d", "e", "f", "g", "h"};
-    int[] cost = {1,5,5,10,40,100};
+    int[] cost = {1, 5, 5, 10, 40, 100};
 
     // Time
     long ONE_SECOND = 1000;

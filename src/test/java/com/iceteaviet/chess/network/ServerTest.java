@@ -13,18 +13,16 @@ import java.io.IOException;
 /**
  * Created by Genius Doan on 6/14/2017.
  */
-public class ServerTest  extends JFrame implements ActionListener {
-
-    private JEditorPane  htmlPane;
-    private JScrollPane  scrollPane;
-    private JTextField 	 textField;
-
-    private ChessServer server;
+public class ServerTest extends JFrame implements ActionListener {
 
     Container cp;
+    private JEditorPane htmlPane;
+    private JScrollPane scrollPane;
+    private JTextField textField;
+    private ChessServer server;
 
     public ServerTest() {
-        setSize(300,400);
+        setSize(300, 400);
         setTitle("Server Chat");
         server = ChessServer.getInstance();
         this.addWindowListener(new WindowAdapter() {
@@ -48,13 +46,14 @@ public class ServerTest  extends JFrame implements ActionListener {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void actionPerformed(ActionEvent e) {
-
-    }
     public static void main(String[] args) throws IOException {
         ServerTest t = new ServerTest();
         t.server.listen();
         t.setVisible(true);
         t.server.startChat(t.htmlPane, t.textField, "Server");
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

@@ -3,6 +3,8 @@ package main.java.com.iceteaviet.chess.network;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 
 /**
+ * NetworkManager is an wrapper class to store functions that can manage all network stuffs
+ * <p>
  * Created by Genius Doan on 6/17/2017.
  */
 public class NetworkManager {
@@ -35,8 +37,7 @@ public class NetworkManager {
         this.isHost = isHost;
         if (isHost) {
             ChessGameWatcher.getInstance().setMainPlayer(ChessGameWatcher.getInstance().getGameBoard().whitePlayer());
-        }
-        else {
+        } else {
             ChessGameWatcher.getInstance().setMainPlayer(ChessGameWatcher.getInstance().getGameBoard().blackPlayer());
         }
     }
@@ -66,8 +67,7 @@ public class NetworkManager {
     public void sendMoveMessages(int currCoord, int desCoord) {
         if (isHost) {
             ChessServer.getInstance().getPlay().sendMoveMessage(currCoord, desCoord);
-        }
-        else {
+        } else {
             ChessClient.getInstance().getPlay().sendMoveMessage(currCoord, desCoord);
         }
     }

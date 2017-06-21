@@ -1,7 +1,7 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
-import main.java.com.iceteaviet.chess.core.board.Board;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
+import main.java.com.iceteaviet.chess.core.player.Move;
 
 /**
  * MoveAlgorithm is a super class for search algorithms. It consists of all the
@@ -10,10 +10,10 @@ import main.java.com.iceteaviet.chess.core.board.Move;
  * Created by Genius Doan on 5/19/2017.
  */
 public interface MoveAlgorithm {
-    // The chess board to be worked on
-    //protected Board board;
+    // The chess gameBoard to be worked on
+    //protected GameBoard gameBoard;
 
     public long getBoardEvaluatedNumbers();
 
-    public Move eval(Board board, int depth);
+    public Move eval(GameBoard gameBoard, int depth);
 }

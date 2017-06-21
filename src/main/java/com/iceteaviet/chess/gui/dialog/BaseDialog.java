@@ -21,7 +21,7 @@ public class BaseDialog extends JDialog implements BaseView {
     }
 
     public BaseDialog(JFrame frame, boolean modal) {
-        super(frame,modal);
+        super(frame, modal);
     }
 
     public BaseDialog(String title, int width, int height) {
@@ -61,7 +61,7 @@ public class BaseDialog extends JDialog implements BaseView {
                 add(toolbar, BorderLayout.NORTH);
             else {
                 setLayout(null);
-                toolbar.setBounds(0,0, width, 48);
+                toolbar.setBounds(0, 0, width, 48);
                 add(toolbar);
             }
         }

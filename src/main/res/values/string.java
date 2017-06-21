@@ -18,4 +18,7 @@ public class string {
     public static final String error_cannot_load_image = "Unable to load piece icon from resources!";
     public static final String error_moving_ai = "Internal ChessAI error while finding a new move!";
     public static final String chess_ai = "Chess AI";
+    public static final String cannot_read_resource = "Can't read input file";
+    public static final String toolbar_server_title = "Finding chess opponent";
+    public static final String about = "Version 0.1. Copyright © IceTeaViet";
 }

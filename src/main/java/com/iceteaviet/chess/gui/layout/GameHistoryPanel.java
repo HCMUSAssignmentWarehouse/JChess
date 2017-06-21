@@ -1,7 +1,7 @@
 package main.java.com.iceteaviet.chess.gui.layout;
 
-import main.java.com.iceteaviet.chess.core.board.Board;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
@@ -34,24 +34,24 @@ public class GameHistoryPanel extends JPanel {
         this.setVisible(true);
     }
 
-    private static String calculateCheckAndCheckMateHash(final Board board) {
-        if (board.getCurrentPlayer().isInCheckMate()) {
+    private static String calculateCheckAndCheckMateHash(final GameBoard gameBoard) {
+        if (gameBoard.getCurrentPlayer().isInCheckMate()) {
             return "#";
-        } else if (board.getCurrentPlayer().isInCheck()) {
+        } else if (gameBoard.getCurrentPlayer().isInCheck()) {
             return "+";
         }
         return "";
     }
 
-    public void redo(final Board board,
+    public void redo(final GameBoard gameBoard,
                      final ChessGameWatcher.MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {
             final String moveText = move.toString();
-            if (move.getMovedPiece().getPieceAlliance().isWhite()) {
+            if (move.getMovedPiece().getAlliance().isWhite()) {
                 this.model.setValueAt(moveText, currentRow, 0);
-            } else if (move.getMovedPiece().getPieceAlliance().isBlack()) {
+            } else if (move.getMovedPiece().getAlliance().isBlack()) {
                 this.model.setValueAt(moveText, currentRow, 1);
                 currentRow++;
             }
@@ -61,10 +61,10 @@ public class GameHistoryPanel extends JPanel {
             final Move lastMove = moveHistory.getMoves().get(moveHistory.size() - 1);
             final String moveText = lastMove.toString();
 
-            if (lastMove.getMovedPiece().getPieceAlliance().isWhite()) {
-                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(board), currentRow, 0);
-            } else if (lastMove.getMovedPiece().getPieceAlliance().isBlack()) {
-                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(board), currentRow - 1, 1);
+            if (lastMove.getMovedPiece().getAlliance().isWhite()) {
+                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(gameBoard), currentRow, 0);
+            } else if (lastMove.getMovedPiece().getAlliance().isBlack()) {
+                this.model.setValueAt(moveText + calculateCheckAndCheckMateHash(gameBoard), currentRow - 1, 1);
             }
         }
 

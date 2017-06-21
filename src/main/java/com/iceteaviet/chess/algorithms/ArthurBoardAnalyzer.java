@@ -1,14 +1,14 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
-import main.java.com.iceteaviet.chess.core.board.Board;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.core.player.Player;
 
 /**
  * Created by MyPC on 5/24/2017.
  */
-public final class StandardBoardEvaluator implements BoardEvaluator {
+public final class ArthurBoardAnalyzer implements GameBoardAnalyzer {
 
     private static final int CHECK_BONUS = 50;
     private static final int CHECK_MATE_BONUS = 10000;
@@ -19,15 +19,15 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int ATTACK_MULTIPLIER = 2;
     private final static int TWO_BISHOPS_BONUS = 50;
 
-    private static StandardBoardEvaluator mInstance = null;
+    private static ArthurBoardAnalyzer mInstance = null;
 
-    private StandardBoardEvaluator() {
+    private ArthurBoardAnalyzer() {
         //Singleton
     }
 
-    public static StandardBoardEvaluator getInstance() {
+    public static ArthurBoardAnalyzer getInstance() {
         if (mInstance == null)
-            mInstance = new StandardBoardEvaluator();
+            mInstance = new ArthurBoardAnalyzer();
 
         return mInstance;
     }
@@ -56,8 +56,8 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         int pieceValueScore = 0;
         int numBishops = 0;
         for (final Piece piece : player.getActivePiece()) {
-            pieceValueScore += piece.getPieceValue() + piece.locationBonus();
-            if (piece.getPieceType().equals(Piece.PieceType.BISHOP)) {
+            pieceValueScore += piece.getValue() + piece.locationBonus();
+            if (piece.getType().equals(Piece.PieceType.BISHOP)) {
                 numBishops++;
             }
         }
@@ -74,7 +74,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
             if (move.isAttack()) {
                 final Piece movedPiece = move.getMovedPiece();
                 final Piece attackedPiece = move.getAttackedPiece();
-                if (movedPiece.getPieceValue() <= attackedPiece.getPieceValue()) {
+                if (movedPiece.getValue() <= attackedPiece.getValue()) {
                     attackScore++;
                 }
             }
@@ -87,8 +87,8 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     @Override
-    public int evaluate(final Board board, final int depth) {
-        return getPlayerScore(board.whitePlayer(), depth) - getPlayerScore(board.blackPlayer(), depth);
+    public int evaluate(final GameBoard gameBoard, final int depth) {
+        return getPlayerScore(gameBoard.whitePlayer(), depth) - getPlayerScore(gameBoard.blackPlayer(), depth);
     }
 
     private int getPlayerScore(final Player player, final int depth) {

@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 import main.res.values.string;
@@ -67,7 +67,7 @@ public class ChessAI {
         protected void done() {
             try {
                 final Move bestMove = get();
-                ChessGameWatcher.getInstance().updateComputerMove(bestMove);
+                ChessGameWatcher.getInstance().updateAIMove(bestMove);
                 ChessGameWatcher.getInstance().updateGameBoard(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().makeMove(bestMove).getTransitionBoard());
                 ChessGameWatcher.getInstance().getMoveLog().addMove(bestMove);
                 ChessGameWatcher.getInstance().getGameHistoryPanel().redo(ChessGameWatcher.getInstance().getGameBoard(), ChessGameWatcher.getInstance().getMoveLog());

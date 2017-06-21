@@ -9,15 +9,14 @@ import java.io.IOException;
 /**
  * Created by Genius Doan on 6/14/2017.
  */
-public class ClientTest  extends JFrame {
-    private JEditorPane  htmlPane;
+public class ClientTest extends JFrame {
+    Container cp;
+    private JEditorPane htmlPane;
     private JScrollPane scrollPane;
     private JTextField textField;
 
-    Container cp;
-
     public ClientTest() {
-        setSize(300,400);
+        setSize(300, 400);
         setTitle("Client Chat");
 
         htmlPane = new JEditorPane();

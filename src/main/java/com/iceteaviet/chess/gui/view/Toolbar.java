@@ -1,8 +1,9 @@
 package main.java.com.iceteaviet.chess.gui.view;
 
 import main.java.com.iceteaviet.chess.gui.OnClickListener;
-import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
+import main.java.com.iceteaviet.chess.gui.UIUtils;
+import main.res.values.string;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -39,8 +40,8 @@ public class Toolbar extends JPanel implements BaseView {
 
     @Override
     public void initLayoutView() {
-       setLayout(new BorderLayout());
-       setPreferredSize(new Dimension(defaultWidth, defaultHeight));
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(defaultWidth, defaultHeight));
         setBackground(UIConstants.MATERIAL_TOOLBAR_COLOR);
         //setLayout(new BorderLayout());
 
@@ -65,7 +66,7 @@ public class Toolbar extends JPanel implements BaseView {
             jTitle.setForeground(Color.WHITE);
             titlePanel.add(jTitle);
 
-            JLabel jSubTitle = new JLabel("Version 0.1. Copyright © IceTeaViet");
+            JLabel jSubTitle = new JLabel(string.about);
             jSubTitle.setBorder(new EmptyBorder(0, 8, 8, 8));
             jSubTitle.setFont(new Font("Sans-serif", Font.PLAIN, 12));
             jSubTitle.setForeground(Color.WHITE);

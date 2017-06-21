@@ -1,15 +1,15 @@
 package main.java.com.iceteaviet.chess.core.piece;
 
 import main.java.com.iceteaviet.chess.core.Alliance;
-import main.java.com.iceteaviet.chess.core.board.Board;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
+import main.java.com.iceteaviet.chess.core.player.Move;
 
 import java.util.Collection;
 
 /**
  * Created by NhaTran on 5/9/2017.
  * <p>
- * Base class of Chess Pieces
+ * Base class of Chess Pieces.
  */
 public abstract class Piece {
     protected static final boolean DEFAULT_FIRST_MOVE = true;
@@ -20,7 +20,7 @@ public abstract class Piece {
     private final int cacheHashCode;
 
     Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance) {
-       this(pieceType, piecePosition, pieceAlliance, DEFAULT_FIRST_MOVE);
+        this(pieceType, piecePosition, pieceAlliance, DEFAULT_FIRST_MOVE);
     }
 
     Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance, final boolean isFirstMove) {
@@ -28,10 +28,10 @@ public abstract class Piece {
         this.piecePosition = piecePosition;
         this.pieceAlliance = pieceAlliance;
         this.isFirstMove = isFirstMove;
-        this.cacheHashCode = computeHashCode();
+        this.cacheHashCode = getHashCode();
     }
 
-    private int computeHashCode() {
+    private int getHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
@@ -42,7 +42,7 @@ public abstract class Piece {
 
     public abstract int locationBonus();
 
-    public PieceType getPieceType() {
+    public PieceType getType() {
         return this.pieceType;
     }
 
@@ -50,24 +50,24 @@ public abstract class Piece {
         return this.isFirstMove;
     }
 
-    public Alliance getPieceAlliance() {
+    public Alliance getAlliance() {
         return this.pieceAlliance;
     }
 
-    public abstract Collection<Move> calculateLegalMove(final Board board);
+    public abstract Collection<Move> calculateLegalMove(final GameBoard gameBoard);
 
-    public abstract Piece movePiece(Move move);
+    public abstract Piece move(Move move);
 
-    public Integer getPiecePosition() {
+    public Integer getPosition() {
         return piecePosition;
     }
 
-    public int getPieceValue() {
+    public int getValue() {
         return this.pieceType.getPieceValue();
     }
 
-    public String getPieceAllianceLetter() {
-        return getPieceAlliance().toString().substring(0, 1);
+    public String getAllianceLetter() {
+        return getAlliance().toString().substring(0, 1);
     }
 
     @Override
@@ -80,8 +80,8 @@ public abstract class Piece {
         }
 
         final Piece otherPiece = (Piece) obj;
-        return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType()
-                && pieceAlliance == otherPiece.getPieceAlliance() && isFirstMove == otherPiece.isFirstMove();
+        return piecePosition == otherPiece.getPosition() && pieceType == otherPiece.getType()
+                && pieceAlliance == otherPiece.getAlliance() && isFirstMove == otherPiece.isFirstMove();
     }
 
     @Override
@@ -178,7 +178,5 @@ public abstract class Piece {
         public String toString() {
             return this.pieceName;
         }
-
-
     }
 }

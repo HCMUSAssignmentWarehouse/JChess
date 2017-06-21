@@ -13,11 +13,6 @@ import java.net.Socket;
  * TODO: Consider extends Thread or Runable to make multi-threading
  */
 public abstract class NetworkEndPoint extends Thread {
-    /**
-     * The default port to use
-     */
-    protected static final int DEFAULT_PORT = NetworkConstants.DEFAULT_PORT;
-
     public static final int STATUS_CONNECTED = 1;
     public static final int STATUS_DISCONNECTED = -1;
     public static final int STATUS_UNKNOWN = 0;
@@ -25,8 +20,10 @@ public abstract class NetworkEndPoint extends Thread {
     public static final int STATUS_SERVER_CLOSED = 3;
     public static final int STATUS_CLIENT_CLOSED = 2;
     public static final int STATUS_ERROR = -2;
-
-
+    /**
+     * The default port to use
+     */
+    protected static final int DEFAULT_PORT = NetworkConstants.DEFAULT_PORT;
     /**
      * The default host IP to use
      */
@@ -96,7 +93,7 @@ public abstract class NetworkEndPoint extends Thread {
                 opponent.close();
 
             if (mListener != null)
-                mListener.onStatusUpdate(STATUS_DISCONNECTED,"Connection closed.");
+                mListener.onStatusUpdate(STATUS_DISCONNECTED, "Connection closed.");
             System.out.println("Connection closed.");
         } catch (IOException e) {
             System.out.println("Error: Closing problem");

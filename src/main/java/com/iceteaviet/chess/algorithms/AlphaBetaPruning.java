@@ -2,9 +2,9 @@ package main.java.com.iceteaviet.chess.algorithms;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
-import main.java.com.iceteaviet.chess.core.board.Move;
+import main.java.com.iceteaviet.chess.core.board.GameBoard;
+import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
 import main.java.com.iceteaviet.chess.core.player.Player;
 import main.res.values.string;
@@ -25,13 +25,13 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
     private static final int MAX_QUIESCENCE = 5000;
 
     private final int searchDepth;
-    private final BoardEvaluator boardEvaluator;
+    private final GameBoardAnalyzer gameBoardAnalyzer;
     private long boardsEvaluated;
     private long executionTime;
     private int quiescenceCount;
 
     public AlphaBetaPruning(final int searchDepth) {
-        this.boardEvaluator = StandardBoardEvaluator.getInstance();
+        this.gameBoardAnalyzer = ArthurBoardAnalyzer.getInstance();
         this.searchDepth = searchDepth;
         this.boardsEvaluated = 0;
         this.quiescenceCount = 0;
@@ -65,19 +65,19 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
     }
 
     @Override
-    public Move eval(final Board board, int searchDepth) {
+    public Move eval(final GameBoard gameBoard, int searchDepth) {
         final long startTime = System.currentTimeMillis();
-        final Player currentPlayer = board.getCurrentPlayer();
+        final Player currentPlayer = gameBoard.getCurrentPlayer();
         Move bestMove = Move.MoveFactory.createMove(null, -1, -1);
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.getCurrentPlayer() + " is THINKING with depth = " + this.searchDepth);
+        System.out.println(gameBoard.getCurrentPlayer() + " is THINKING with depth = " + this.searchDepth);
         int moveCounter = 1;
-        int numMoves = board.getCurrentPlayer().getLegalMoves().size();
+        int numMoves = gameBoard.getCurrentPlayer().getLegalMoves().size();
 
-        for (final Move move : MoveSorter.EXPENSIVE.sort((board.getCurrentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+        for (final Move move : MoveSorter.EXPENSIVE.sort((gameBoard.getCurrentPlayer().getLegalMoves()))) {
+            final MoveTransition moveTransition = gameBoard.getCurrentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             final String s;
             if (moveTransition.getMoveStatus().isDone()) {
@@ -113,22 +113,22 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
         }
 
         this.executionTime = System.currentTimeMillis() - startTime;
-        System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, rate = %.1f\n", board.getCurrentPlayer(),
+        System.out.printf("%s SELECTS %s [#boards evaluated = %d, time taken = %d ms, rate = %.1f\n", gameBoard.getCurrentPlayer(),
                 bestMove, this.boardsEvaluated, this.executionTime, (1000 * ((double) this.boardsEvaluated / this.executionTime)));
         return bestMove;
     }
 
-    private int max(final Board board,
+    private int max(final GameBoard gameBoard,
                     final int depth,
                     final int highest,
                     final int lowest) {
-        if (depth == 0 || BoardUtils.isEndGame(board)) {
+        if (depth == 0 || BoardUtils.isEndGame(gameBoard)) {
             this.boardsEvaluated++;
-            return this.boardEvaluator.evaluate(board, depth);
+            return this.gameBoardAnalyzer.evaluate(gameBoard, depth);
         }
         int currentHighest = highest;
-        for (final Move move : MoveSorter.STANDARD.sort((board.getCurrentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+        for (final Move move : MoveSorter.STANDARD.sort((gameBoard.getCurrentPlayer().getLegalMoves()))) {
+            final MoveTransition moveTransition = gameBoard.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentHighest = Math.max(currentHighest, min(moveTransition.getTransitionBoard(),
                         calculateQuiescenceDepth(moveTransition, depth), currentHighest, lowest));
@@ -140,17 +140,17 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
         return currentHighest;
     }
 
-    private int min(final Board board,
+    private int min(final GameBoard gameBoard,
                     final int depth,
                     final int highest,
                     final int lowest) {
-        if (depth == 0 || BoardUtils.isEndGame(board)) {
+        if (depth == 0 || BoardUtils.isEndGame(gameBoard)) {
             this.boardsEvaluated++;
-            return this.boardEvaluator.evaluate(board, depth);
+            return this.gameBoardAnalyzer.evaluate(gameBoard, depth);
         }
         int currentLowest = lowest;
-        for (final Move move : MoveSorter.STANDARD.sort((board.getCurrentPlayer().getLegalMoves()))) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+        for (final Move move : MoveSorter.STANDARD.sort((gameBoard.getCurrentPlayer().getLegalMoves()))) {
+            final MoveTransition moveTransition = gameBoard.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentLowest = Math.min(currentLowest, max(moveTransition.getTransitionBoard(),
                         calculateQuiescenceDepth(moveTransition, depth), highest, currentLowest));
@@ -169,7 +169,7 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
             if (moveTransition.getTransitionBoard().getCurrentPlayer().isInCheck()) {
                 activityMeasure += 2;
             }
-            for (final Move move : BoardUtils.lastNMoves(moveTransition.getTransitionBoard(), 4)) {
+            for (final Move move : BoardUtils.getLastNMoves(moveTransition.getTransitionBoard(), 4)) {
                 if (move.isAttack()) {
                     activityMeasure += 1;
                 }
@@ -192,7 +192,7 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
                                        final Move move2) {
                         return ComparisonChain.start()
                                 .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                                .compare(BoardUtils.mvvlva(move2), BoardUtils.mvvlva(move1))
+                                .compare(BoardUtils.mostValueVictimLestValueAggressor(move2), BoardUtils.mostValueVictimLestValueAggressor(move1))
                                 .result();
                     }
                 }).immutableSortedCopy(moves);
@@ -206,9 +206,9 @@ public class AlphaBetaPruning extends Observable implements MoveAlgorithm {
                     public int compare(final Move move1,
                                        final Move move2) {
                         return ComparisonChain.start()
-                                .compareTrueFirst(BoardUtils.kingThreat(move1), BoardUtils.kingThreat(move2))
+                                .compareTrueFirst(BoardUtils.isKingThreat(move1), BoardUtils.isKingThreat(move2))
                                 .compareTrueFirst(move1.isCastlingMove(), move2.isCastlingMove())
-                                .compare(BoardUtils.mvvlva(move2), BoardUtils.mvvlva(move1))
+                                .compare(BoardUtils.mostValueVictimLestValueAggressor(move2), BoardUtils.mostValueVictimLestValueAggressor(move1))
                                 .result();
                     }
                 }).immutableSortedCopy(moves);
