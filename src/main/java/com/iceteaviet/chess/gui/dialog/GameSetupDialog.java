@@ -8,7 +8,7 @@ import main.java.com.iceteaviet.chess.algorithms.ChessAI;
 import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Player;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.res.values.string;
 
 import javax.swing.*;
@@ -18,8 +18,8 @@ import java.awt.event.ActionListener;
 
 
 public class GameSetupDialog extends BaseDialog {
-    private Table.PlayerType whitePlayerType;
-    private Table.PlayerType blackPlayerType;
+    private ChessGameWatcher.PlayerType whitePlayerType;
+    private ChessGameWatcher.PlayerType blackPlayerType;
     private JSpinner searchDepthSpinner;
     private JRadioButton btnAlphaBeta;
 
@@ -67,8 +67,8 @@ public class GameSetupDialog extends BaseDialog {
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                whitePlayerType = whiteComputerButton.isSelected() ? Table.PlayerType.COMPUTER : Table.PlayerType.HUMAN;
-                blackPlayerType = blackComputerButton.isSelected() ? Table.PlayerType.COMPUTER : Table.PlayerType.HUMAN;
+                whitePlayerType = whiteComputerButton.isSelected() ? ChessGameWatcher.PlayerType.COMPUTER : ChessGameWatcher.PlayerType.HUMAN;
+                blackPlayerType = blackComputerButton.isSelected() ? ChessGameWatcher.PlayerType.COMPUTER : ChessGameWatcher.PlayerType.HUMAN;
                 GameSetupDialog.this.setVisible(false);
             }
         });
@@ -104,16 +104,16 @@ public class GameSetupDialog extends BaseDialog {
 
     public boolean isAIPlayer(final Player player) {
         if (player.getAlliance() == Alliance.WHITE) {
-            return getWhitePlayerType() == Table.PlayerType.COMPUTER;
+            return getWhitePlayerType() == ChessGameWatcher.PlayerType.COMPUTER;
         }
-        return getBlackPlayerType() == Table.PlayerType.COMPUTER;
+        return getBlackPlayerType() == ChessGameWatcher.PlayerType.COMPUTER;
     }
 
-    public Table.PlayerType getWhitePlayerType() {
+    public ChessGameWatcher.PlayerType getWhitePlayerType() {
         return this.whitePlayerType;
     }
 
-    public Table.PlayerType getBlackPlayerType() {
+    public ChessGameWatcher.PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
     }
 

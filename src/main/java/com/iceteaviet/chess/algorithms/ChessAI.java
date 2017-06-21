@@ -1,7 +1,7 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
 import main.java.com.iceteaviet.chess.core.board.Move;
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 import main.res.values.string;
 
@@ -38,14 +38,14 @@ public class ChessAI {
     //Find best move for AI
     private Move getBestMove(boolean isAlphaBetaStock) {
         if (isAlphaBetaStock) {
-            int searchDepth = Table.getInstance().getGameSetupDialog().getSearchDepth();
+            int searchDepth = ChessGameWatcher.getInstance().getGameSetupDialog().getSearchDepth();
             final AlphaBetaPruning strategy =
                     new AlphaBetaPruning(searchDepth);
-            return strategy.eval(Table.getInstance().getGameBoard(), searchDepth);
+            return strategy.eval(ChessGameWatcher.getInstance().getGameBoard(), searchDepth);
         } else {
             //Use MiniMax
-            final MoveAlgorithm minimax = new MiniMax(Table.getInstance().getGameSetupDialog().getSearchDepth());
-            return minimax.eval(Table.getInstance().getGameBoard(), Table.getInstance().getGameSetupDialog().getSearchDepth());
+            final MoveAlgorithm minimax = new MiniMax(ChessGameWatcher.getInstance().getGameSetupDialog().getSearchDepth());
+            return minimax.eval(ChessGameWatcher.getInstance().getGameBoard(), ChessGameWatcher.getInstance().getGameSetupDialog().getSearchDepth());
         }
     }
 
@@ -67,13 +67,13 @@ public class ChessAI {
         protected void done() {
             try {
                 final Move bestMove = get();
-                Table.getInstance().updateComputerMove(bestMove);
-                Table.getInstance().updateGameBoard(Table.getInstance().getGameBoard().getCurrentPlayer().makeMove(bestMove).getTransitionBoard());
-                Table.getInstance().getMoveLog().addMove(bestMove);
-                Table.getInstance().getGameHistoryPanel().redo(Table.getInstance().getGameBoard(), Table.getInstance().getMoveLog());
-                Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-                Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
-                Table.getInstance().moveMadeUpdate(Table.PlayerType.COMPUTER);
+                ChessGameWatcher.getInstance().updateComputerMove(bestMove);
+                ChessGameWatcher.getInstance().updateGameBoard(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().makeMove(bestMove).getTransitionBoard());
+                ChessGameWatcher.getInstance().getMoveLog().addMove(bestMove);
+                ChessGameWatcher.getInstance().getGameHistoryPanel().redo(ChessGameWatcher.getInstance().getGameBoard(), ChessGameWatcher.getInstance().getMoveLog());
+                ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
+                ChessGameWatcher.getInstance().getBoardPanel().drawBoard(ChessGameWatcher.getInstance().getGameBoard());
+                ChessGameWatcher.getInstance().moveMadeUpdate(ChessGameWatcher.PlayerType.COMPUTER);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

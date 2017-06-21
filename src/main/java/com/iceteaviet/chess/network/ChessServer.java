@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.network;
 
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -34,8 +34,8 @@ public final class ChessServer extends NetworkEndPoint {
         } else {
             listen();
         }
-        startChat(Table.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
-                Table.getInstance().getRightMenuPanel().getChatPanel().getTextField(),
+        startChat(ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
+                ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getTextField(),
                 "Server");
         startGame();
     }

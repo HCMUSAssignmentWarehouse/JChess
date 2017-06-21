@@ -3,7 +3,7 @@ package main.java.com.iceteaviet.chess.gui.layout;
 import com.google.common.primitives.Ints;
 import main.java.com.iceteaviet.chess.core.board.Move;
 import main.java.com.iceteaviet.chess.core.piece.Piece;
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 
@@ -39,7 +39,7 @@ public class TakenPiecesPanel extends JPanel {
         setPreferredSize(UIConstants.LEFT_TAKEN_PIECES_PANEL_DIMENSION);
     }
 
-    public void redo(final Table.MoveLog moveLog) {
+    public void redo(final ChessGameWatcher.MoveLog moveLog) {
         southPanel.removeAll();
         northPanel.removeAll();
 
@@ -79,7 +79,7 @@ public class TakenPiecesPanel extends JPanel {
                 String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
                         + takenPiece.toString()
                         + UIConstants.CHESS_DRAWABLE_EXTENSION;
-                ImageIcon icon = UIUtils.getScaledIconFromResources(iconName.toLowerCase(), 40, 40);
+                ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), iconName.toLowerCase(), 40, 40);
                 final JLabel imageLabel = new JLabel(icon);
                 this.southPanel.add(imageLabel);
             } catch (final IOException e) {
@@ -92,7 +92,7 @@ public class TakenPiecesPanel extends JPanel {
                 String iconName = takenPiece.getPieceAlliance().toString().substring(0, 1)
                         + takenPiece.toString()
                         + UIConstants.CHESS_DRAWABLE_EXTENSION;
-                final ImageIcon icon = UIUtils.getScaledIconFromResources(iconName.toLowerCase(), 40, 40);
+                final ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), iconName.toLowerCase(), 40, 40);
                 final JLabel imageLabel = new JLabel(icon);
                 this.northPanel.add(imageLabel);
 

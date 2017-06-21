@@ -1,7 +1,6 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
-import javafx.scene.control.Tab;
 import main.java.com.iceteaviet.chess.algorithms.ChessAI;
 import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.Board;
@@ -32,10 +31,12 @@ import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 /**
+ * ChessGameWatcher
+ *
  * Created by MyPC on 5/12/2017.
  */
-public class Table extends Observable {
-    private static final Table INSTANCE = new Table();
+public class ChessGameWatcher extends Observable {
+    private static final ChessGameWatcher INSTANCE = new ChessGameWatcher();
     private final MainFrame gameFrame;
     private final BoardPanel boardPanel;
     private final TakenPiecesPanel takenPiecesPanel;
@@ -52,7 +53,7 @@ public class Table extends Observable {
     private boolean isNetPlay = false;
     private Move computerMove;
 
-    private Table() {
+    private ChessGameWatcher() {
         this.gameFrame = new MainFrame(string.game_name);
         this.chessBoard = Board.createStandardBoard();
         this.takenPiecesPanel = new TakenPiecesPanel();
@@ -68,17 +69,17 @@ public class Table extends Observable {
         this.gameFrame.setShowToolbar(true);
     }
 
-    public static Table getInstance() {
+    public static ChessGameWatcher getInstance() {
         return INSTANCE;
     }
 
     public void show() {
         this.gameFrame.setMenuBarEnabled(true);
         this.gameFrame.setVisible(true);
-        Table.getInstance().getMoveLog().clear();
-        Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
-        Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-        Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
+        ChessGameWatcher.getInstance().getMoveLog().clear();
+        ChessGameWatcher.getInstance().getGameHistoryPanel().redo(chessBoard, ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getBoardPanel().drawBoard(ChessGameWatcher.getInstance().getGameBoard());
     }
 
     public Component getMainGameFrame() {
@@ -107,13 +108,13 @@ public class Table extends Observable {
     }
 
     public void undoLastMove() {
-        final Move lastMove = Table.getInstance().getMoveLog().removeMove(Table.getInstance().getMoveLog().size() - 1);
+        final Move lastMove = ChessGameWatcher.getInstance().getMoveLog().removeMove(ChessGameWatcher.getInstance().getMoveLog().size() - 1);
         this.chessBoard = this.chessBoard.getCurrentPlayer().unMakeMove(lastMove).getTransitionBoard();
         this.computerMove = null;
-        Table.getInstance().getMoveLog().removeMove(lastMove);
-        Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
-        Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-        Table.getInstance().getBoardPanel().drawBoard(chessBoard);
+        ChessGameWatcher.getInstance().getMoveLog().removeMove(lastMove);
+        ChessGameWatcher.getInstance().getGameHistoryPanel().redo(chessBoard, ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getBoardPanel().drawBoard(chessBoard);
     }
 
     public void setupUpdate(final GameSetupDialog gameSetupDialog) {
@@ -192,8 +193,8 @@ public class Table extends Observable {
     }
 
     public void onEndGame() {
-        Table.getInstance().rightMenuPanel.getChronometerB().stop();
-        Table.getInstance().rightMenuPanel.getChronometerW().stop();
+        ChessGameWatcher.getInstance().rightMenuPanel.getChronometerB().stop();
+        ChessGameWatcher.getInstance().rightMenuPanel.getChronometerW().stop();
     }
 
     public void drawBoardAfterMove() {
@@ -204,7 +205,7 @@ public class Table extends Observable {
                 takenPiecesPanel.redo(moveLog);
 
                 //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                Table.getInstance().moveMadeUpdate(PlayerType.HUMAN);
+                ChessGameWatcher.getInstance().moveMadeUpdate(PlayerType.HUMAN);
                 //}
 
                 boardPanel.drawBoard(chessBoard);
@@ -250,21 +251,21 @@ public class Table extends Observable {
 
         @Override
         public void update(Observable o, Object arg) {
-            if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer())
-                    && !Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()
-                    && !Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
-                ChessAI.getInstance(Table.getInstance().gameSetupDialog.isAlphaBetaStock()).move();
+            if (ChessGameWatcher.getInstance().getGameSetupDialog().isAIPlayer(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer())
+                    && !ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()
+                    && !ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
+                ChessAI.getInstance(ChessGameWatcher.getInstance().gameSetupDialog.isAlphaBetaStock()).move();
             }
 
-            if (Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()) {
-                System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!");
-                MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!", "Game Over");
-                Table.getInstance().onEndGame();
+            if (ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()) {
+                System.out.print("Game over, " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!");
+                MessageBox.showInfo("Game Over: Player " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!", "Game Over");
+                ChessGameWatcher.getInstance().onEndGame();
             }
-            if (Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
-                System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!");
-                MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!", "Game Over");
-                Table.getInstance().onEndGame();
+            if (ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
+                System.out.print("Game over, " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!");
+                MessageBox.showInfo("Game Over: Player " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!", "Game Over");
+                ChessGameWatcher.getInstance().onEndGame();
             }
         }
     }
@@ -348,8 +349,8 @@ public class Table extends Observable {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
 
-                    if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer()) ||
-                            BoardUtils.isEndGame(Table.getInstance().getGameBoard())) {
+                    if (ChessGameWatcher.getInstance().getGameSetupDialog().isAIPlayer(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer()) ||
+                            BoardUtils.isEndGame(ChessGameWatcher.getInstance().getGameBoard())) {
                         return;
                     }
 
@@ -438,7 +439,7 @@ public class Table extends Observable {
                 for (final Move move : pieceLegalMoves(board)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
-                            add(new JLabel(UIUtils.getIconFromResources("green_dot.png")));
+                            add(new JLabel(UIUtils.getIconFromResources(this.getClass(), "green_dot.png")));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -461,7 +462,7 @@ public class Table extends Observable {
                     String imgName = board.getTile(this.tileId).getPiece().getPieceAllianceLetter()
                             + board.getTile(this.tileId).getPiece().toString()
                             + UIConstants.CHESS_DRAWABLE_EXTENSION;
-                    ImageIcon icon = UIUtils.getScaledIconFromResources(imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
+                    ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
                     add(new JLabel(icon));
                 } catch (IOException e) {
                     e.printStackTrace();
