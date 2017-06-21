@@ -34,7 +34,7 @@ public class ChatPanel extends JPanel {
         btnSend.setForeground(Color.WHITE);
         UIUtils.setEmptyBorder(btnSend, 4, 8, 4, 8);
         try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("send.png", 24, 24);
+            ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "send.png", 24, 24);
             btnSend.setIcon(icon);
         } catch (IOException e) {
             e.printStackTrace();

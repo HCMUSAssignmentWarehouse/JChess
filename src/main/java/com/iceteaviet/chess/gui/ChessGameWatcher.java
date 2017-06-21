@@ -1,8 +1,7 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import com.google.common.collect.Lists;
-import main.java.com.iceteaviet.chess.algorithms.Minimax;
-import main.java.com.iceteaviet.chess.algorithms.MoveStrategy;
+import main.java.com.iceteaviet.chess.algorithms.ChessAI;
 import main.java.com.iceteaviet.chess.core.Alliance;
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
@@ -17,10 +16,8 @@ import main.java.com.iceteaviet.chess.gui.layout.GameHistoryPanel;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
-import main.java.com.iceteaviet.chess.gui.view.Chronometer;
-import main.java.com.iceteaviet.chess.network.ChessPlay;
 import main.java.com.iceteaviet.chess.network.NetworkManager;
-import sun.nio.ch.Net;
+import main.res.values.string;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,16 +26,17 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
 /**
+ * ChessGameWatcher
+ *
  * Created by MyPC on 5/12/2017.
  */
-public class Table extends Observable {
-    private static final Table INSTANCE = new Table();
+public class ChessGameWatcher extends Observable {
+    private static final ChessGameWatcher INSTANCE = new ChessGameWatcher();
     private final MainFrame gameFrame;
     private final BoardPanel boardPanel;
     private final TakenPiecesPanel takenPiecesPanel;
@@ -55,8 +53,8 @@ public class Table extends Observable {
     private boolean isNetPlay = false;
     private Move computerMove;
 
-    private Table() {
-        this.gameFrame = new MainFrame("Arthur Chess");
+    private ChessGameWatcher() {
+        this.gameFrame = new MainFrame(string.game_name);
         this.chessBoard = Board.createStandardBoard();
         this.takenPiecesPanel = new TakenPiecesPanel();
         this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
@@ -71,17 +69,17 @@ public class Table extends Observable {
         this.gameFrame.setShowToolbar(true);
     }
 
-    public static Table getInstance() {
+    public static ChessGameWatcher getInstance() {
         return INSTANCE;
     }
 
     public void show() {
         this.gameFrame.setMenuBarEnabled(true);
         this.gameFrame.setVisible(true);
-        Table.getInstance().getMoveLog().clear();
-        Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
-        Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-        Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
+        ChessGameWatcher.getInstance().getMoveLog().clear();
+        ChessGameWatcher.getInstance().getGameHistoryPanel().redo(chessBoard, ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getBoardPanel().drawBoard(ChessGameWatcher.getInstance().getGameBoard());
     }
 
     public Component getMainGameFrame() {
@@ -110,14 +108,13 @@ public class Table extends Observable {
     }
 
     public void undoLastMove() {
-        final Move lastMove = Table.getInstance().getMoveLog().removeMove(Table.getInstance().getMoveLog().size() - 1);
+        final Move lastMove = ChessGameWatcher.getInstance().getMoveLog().removeMove(ChessGameWatcher.getInstance().getMoveLog().size() - 1);
         this.chessBoard = this.chessBoard.getCurrentPlayer().unMakeMove(lastMove).getTransitionBoard();
         this.computerMove = null;
-        Table.getInstance().getMoveLog().removeMove(lastMove);
-        Table.getInstance().getGameHistoryPanel().redo(chessBoard, Table.getInstance().getMoveLog());
-        Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-        Table.getInstance().getBoardPanel().drawBoard(chessBoard);
-        //Table.getInstance().getDebugPanel().redo();
+        ChessGameWatcher.getInstance().getMoveLog().removeMove(lastMove);
+        ChessGameWatcher.getInstance().getGameHistoryPanel().redo(chessBoard, ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getTakenPiecesPanel().redo(ChessGameWatcher.getInstance().getMoveLog());
+        ChessGameWatcher.getInstance().getBoardPanel().drawBoard(chessBoard);
     }
 
     public void setupUpdate(final GameSetupDialog gameSetupDialog) {
@@ -177,7 +174,7 @@ public class Table extends Observable {
         this.computerMove = move;
     }
 
-    private void moveMadeUpdate(PlayerType playerType) {
+    public void moveMadeUpdate(PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
     }
@@ -195,6 +192,11 @@ public class Table extends Observable {
         boardPanel.drawBoard(chessBoard);
     }
 
+    public void onEndGame() {
+        ChessGameWatcher.getInstance().rightMenuPanel.getChronometerB().stop();
+        ChessGameWatcher.getInstance().rightMenuPanel.getChronometerW().stop();
+    }
+
     public void drawBoardAfterMove() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -203,7 +205,7 @@ public class Table extends Observable {
                 takenPiecesPanel.redo(moveLog);
 
                 //if (gameSetup.isAIPlayer(chessBoard.currentPlayer())) {
-                Table.getInstance().moveMadeUpdate(PlayerType.HUMAN);
+                ChessGameWatcher.getInstance().moveMadeUpdate(PlayerType.HUMAN);
                 //}
 
                 boardPanel.drawBoard(chessBoard);
@@ -249,56 +251,26 @@ public class Table extends Observable {
 
         @Override
         public void update(Observable o, Object arg) {
-            if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer())
-                    && !Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()
-                    && !Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
-                final AIAsyncWorkerTask thinkTank = new AIAsyncWorkerTask();
-                thinkTank.execute();
+            if (ChessGameWatcher.getInstance().getGameSetupDialog().isAIPlayer(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer())
+                    && !ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()
+                    && !ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
+                ChessAI.getInstance(ChessGameWatcher.getInstance().gameSetupDialog.isAlphaBetaStock()).move();
             }
 
-            if (Table.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()) {
-                System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!");
-                MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!", "Game Over");
+            if (ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInCheckMate()) {
+                System.out.print("Game over, " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!");
+                MessageBox.showInfo("Game Over: Player " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in checkmate!", "Game Over");
+                ChessGameWatcher.getInstance().onEndGame();
             }
-            if (Table.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
-                System.out.print("Game over, " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!");
-                MessageBox.showInfo("Game Over: Player " + Table.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!", "Game Over");
-            }
-        }
-    }
-
-    private static class AIAsyncWorkerTask extends SwingWorker<Move, String> {
-        private AIAsyncWorkerTask() {
-
-        }
-
-        @Override
-        protected Move doInBackground() throws Exception {
-            final MoveStrategy minimax = new Minimax(4);
-            final Move bestMove = minimax.execute(Table.getInstance().getGameBoard(), 4);
-            return bestMove;
-        }
-
-        @Override
-        protected void done() {
-            try {
-                final Move bestMove = get();
-                Table.getInstance().updateComputerMove(bestMove);
-                Table.getInstance().updateGameBoard(Table.getInstance().getGameBoard().getCurrentPlayer().makeMove(bestMove).getTransitionBoard());
-                Table.getInstance().getMoveLog().addMove(bestMove);
-                Table.getInstance().getGameHistoryPanel().redo(Table.getInstance().getGameBoard(), Table.getInstance().getMoveLog());
-                Table.getInstance().getTakenPiecesPanel().redo(Table.getInstance().getMoveLog());
-                Table.getInstance().getBoardPanel().drawBoard(Table.getInstance().getGameBoard());
-                //TODO: Redo debug panel
-                Table.getInstance().moveMadeUpdate(PlayerType.COMPUTER);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            if (ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer().isInStaleMate()) {
+                System.out.print("Game over, " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!");
+                MessageBox.showInfo("Game Over: Player " + ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer() + " is in stalemate!", "Game Over");
+                ChessGameWatcher.getInstance().onEndGame();
             }
         }
     }
+
+
 
     public static class MoveLog {
         private final List<Move> moves;
@@ -332,7 +304,7 @@ public class Table extends Observable {
         }
     }
 
-    private class BoardPanel extends JPanel {
+    public class BoardPanel extends JPanel {
         final List<TilePanel> boardTiles;
 
         BoardPanel() {
@@ -346,7 +318,7 @@ public class Table extends Observable {
             System.out.print(this.boardTiles.size());
             setPreferredSize(UIConstants.BOARD_PANEL_DIMENSION);
             setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-            setBackground(Color.decode("#8B4726"));
+            setBackground(UIConstants.PRIMARY_BORDER_COLOR);
             validate();
         }
 
@@ -377,8 +349,8 @@ public class Table extends Observable {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
 
-                    if (Table.getInstance().getGameSetupDialog().isAIPlayer(Table.getInstance().getGameBoard().getCurrentPlayer()) ||
-                            BoardUtils.isEndGame(Table.getInstance().getGameBoard())) {
+                    if (ChessGameWatcher.getInstance().getGameSetupDialog().isAIPlayer(ChessGameWatcher.getInstance().getGameBoard().getCurrentPlayer()) ||
+                            BoardUtils.isEndGame(ChessGameWatcher.getInstance().getGameBoard())) {
                         return;
                     }
 
@@ -395,7 +367,7 @@ public class Table extends Observable {
                                         && !sourceTile.getPiece().getPieceAlliance().equals(mainPlayer.getAlliance())) {
                                     //Opponent chess
                                     sourceTile = null;
-                                    MessageBox.showWarning("You cannot move opponent's chess","Chess network play");
+                                    MessageBox.showWarning(string.warning_cannot_move_opponent_chess, string.chess_network_play);
                                     return;
                                 }
                                 else {
@@ -403,7 +375,7 @@ public class Table extends Observable {
                                     if (!NetworkManager.getInstance().isConnected()) {
                                         //But connection between server and client is not established
                                         sourceTile = null;
-                                        MessageBox.showWarning("Please wait for other player to connect!", "Chess network play");
+                                        MessageBox.showWarning(string.warning_wait_connection, string.chess_network_play);
                                         return;
                                     }
                                 }
@@ -467,7 +439,7 @@ public class Table extends Observable {
                 for (final Move move : pieceLegalMoves(board)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
-                            add(new JLabel(UIUtils.getIconFromResources("green_dot.png")));
+                            add(new JLabel(UIUtils.getIconFromResources(this.getClass(), "green_dot.png")));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -490,11 +462,11 @@ public class Table extends Observable {
                     String imgName = board.getTile(this.tileId).getPiece().getPieceAllianceLetter()
                             + board.getTile(this.tileId).getPiece().toString()
                             + UIConstants.CHESS_DRAWABLE_EXTENSION;
-                    ImageIcon icon = UIUtils.getScaledIconFromResources(imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
+                    ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), imgName.toLowerCase(), UIConstants.DEFAULT_PIECE_ICON_SIZE, UIConstants.DEFAULT_PIECE_ICON_SIZE);
                     add(new JLabel(icon));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    MessageBox.showErrorByException("Unable to load piece icon from resources!", e);
+                    MessageBox.showErrorByException(string.error_cannot_load_image, e);
                 }
             }
         }

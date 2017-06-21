@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: guava-19.0.jar
+Main-Class: main.java.com.iceteaviet.chess.JChess
+

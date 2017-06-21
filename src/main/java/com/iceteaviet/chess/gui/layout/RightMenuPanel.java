@@ -44,7 +44,7 @@ public class RightMenuPanel extends JPanel {
         btnPause.setForeground(Color.WHITE);
         UIUtils.setEmptyBorder(btnPause, 4, 20, 4, 20);
         try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("pause.png", 24, 24);
+            ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "pause.png", 24, 24);
             btnPause.setIcon(icon);
         } catch (IOException e) {
             e.printStackTrace();

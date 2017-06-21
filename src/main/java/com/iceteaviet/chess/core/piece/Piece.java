@@ -12,6 +12,7 @@ import java.util.Collection;
  * Base class of Chess Pieces
  */
 public abstract class Piece {
+    protected static final boolean DEFAULT_FIRST_MOVE = true;
     protected final PieceType pieceType;
     protected final int piecePosition;
     protected final Alliance pieceAlliance;
@@ -19,10 +20,14 @@ public abstract class Piece {
     private final int cacheHashCode;
 
     Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance) {
+       this(pieceType, piecePosition, pieceAlliance, DEFAULT_FIRST_MOVE);
+    }
+
+    Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance, final boolean isFirstMove) {
         this.pieceType = pieceType;
-        this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
-        this.isFirstMove = true;
+        this.pieceAlliance = pieceAlliance;
+        this.isFirstMove = isFirstMove;
         this.cacheHashCode = computeHashCode();
     }
 
@@ -34,6 +39,8 @@ public abstract class Piece {
 
         return result;
     }
+
+    public abstract int locationBonus();
 
     public PieceType getPieceType() {
         return this.pieceType;

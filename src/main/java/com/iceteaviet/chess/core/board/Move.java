@@ -9,7 +9,7 @@ import main.java.com.iceteaviet.chess.core.piece.Rook;
  */
 public abstract class Move {
 
-    public static final Move NULL_MOVE = new NullMove();
+    private static final Move NULL_MOVE = new NullMove();
     protected final Board board;
     protected final Piece movedPiece;
     protected final int destinationCoordinate;
@@ -475,6 +475,9 @@ public abstract class Move {
         }
 
         public static Move createMove(final Board board, final int currentCoordinate, final int destinationCoordinate) {
+            if (board == null)
+                return NULL_MOVE;
+
             for (final Move move : board.getAllLegalMoves()) {
                 if (move.getDestinationCoordinate() == destinationCoordinate && move.getCurrentCoordinate() == currentCoordinate) {
                     return move;

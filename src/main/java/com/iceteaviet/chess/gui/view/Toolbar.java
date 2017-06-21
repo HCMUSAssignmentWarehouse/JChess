@@ -41,14 +41,14 @@ public class Toolbar extends JPanel implements BaseView {
     public void initLayoutView() {
        setLayout(new BorderLayout());
        setPreferredSize(new Dimension(defaultWidth, defaultHeight));
-        setBackground(Color.decode(UIConstants.MATERIAL_TOOLBAR_COLOR));
+        setBackground(UIConstants.MATERIAL_TOOLBAR_COLOR);
         //setLayout(new BorderLayout());
 
         if (mainToolbar) {
             int logoSize = defaultHeight - 2 * MARGIN;
             JLabel logo = null;
             try {
-                logo = new JLabel(UIUtils.getScaledIconFromResources("logo.png", logoSize, logoSize));
+                logo = new JLabel(UIUtils.getScaledIconFromResources(this.getClass(), "logo.png", logoSize, logoSize));
                 logo.setBorder(new EmptyBorder(8, 8, 8, 8));
                 add(logo, BorderLayout.WEST);
             } catch (IOException e) {

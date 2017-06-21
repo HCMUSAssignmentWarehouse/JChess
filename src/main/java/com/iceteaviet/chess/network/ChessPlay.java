@@ -1,7 +1,6 @@
 package main.java.com.iceteaviet.chess.network;
 
-import javafx.scene.control.Tab;
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 
 import java.io.*;
 import java.net.Socket;
@@ -17,10 +16,10 @@ public class ChessPlay {
 
     private BufferedReader netIn;
 
-    private Table table;
+    private ChessGameWatcher table;
 
     public ChessPlay(Socket opponent) {
-        table = Table.getInstance();
+        table = ChessGameWatcher.getInstance();
         this.opponent = opponent;
         try {
             netIn = new BufferedReader(new InputStreamReader(opponent.getInputStream()));

@@ -2,7 +2,7 @@ package main.java.com.iceteaviet.chess.gui.layout;
 
 import main.java.com.iceteaviet.chess.core.board.Board;
 import main.java.com.iceteaviet.chess.core.board.Move;
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 
@@ -44,7 +44,7 @@ public class GameHistoryPanel extends JPanel {
     }
 
     public void redo(final Board board,
-                     final Table.MoveLog moveHistory) {
+                     final ChessGameWatcher.MoveLog moveHistory) {
         int currentRow = 0;
         this.model.clear();
         for (final Move move : moveHistory.getMoves()) {

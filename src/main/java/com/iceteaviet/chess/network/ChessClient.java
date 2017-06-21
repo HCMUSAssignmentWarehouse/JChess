@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.network;
 
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
 
 import java.io.*;
@@ -34,8 +34,8 @@ public final class ChessClient extends NetworkEndPoint {
             } else {
                 connectToServer(DEFAULT_IP);
             }
-            startChat(Table.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
-                    Table.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
+            startChat(ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
+                    ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
             startGame();
         } catch (IOException e) {
             e.printStackTrace();

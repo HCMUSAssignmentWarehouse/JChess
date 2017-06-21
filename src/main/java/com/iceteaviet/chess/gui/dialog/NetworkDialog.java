@@ -1,6 +1,6 @@
 package main.java.com.iceteaviet.chess.gui.dialog;
 
-import main.java.com.iceteaviet.chess.gui.Table;
+import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.network.*;
@@ -38,7 +38,7 @@ public class NetworkDialog extends BaseDialog{
         setLocation(900,0);
         setSize(new Dimension(width, height));
         this.isHost = isHost;
-        Table.getInstance().setNetPlay(true);
+        ChessGameWatcher.getInstance().setNetPlay(true);
         NetworkManager.getInstance().setIsHost(isHost);
         setResizable(false);
         initLayoutView();
@@ -52,10 +52,10 @@ public class NetworkDialog extends BaseDialog{
             @Override
             public void windowClosing(WindowEvent e) {
                 NetworkManager.getInstance().sendEndMessages();
-                Table.getInstance().setNetPlay(false);
+                ChessGameWatcher.getInstance().setNetPlay(false);
 
                 if (!isHost) {
-                    Table.getInstance().flipBoard();
+                    ChessGameWatcher.getInstance().flipBoard();
                 }
 
                 super.windowClosing(e);
@@ -148,7 +148,7 @@ public class NetworkDialog extends BaseDialog{
         btnConnect.setForeground(Color.WHITE);
         UIUtils.setEmptyBorder(btnConnect, 4 ,20 ,4 ,20);
         try {
-            ImageIcon icon = UIUtils.getScaledIconFromResources("lan-connect.png", 24, 24);
+            ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "lan-connect.png", 24, 24);
             btnConnect.setIcon(icon);
         } catch (IOException e) {
             e.printStackTrace();
@@ -174,7 +174,7 @@ public class NetworkDialog extends BaseDialog{
         this.btnConnect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Table.getInstance().flipBoard();
+                ChessGameWatcher.getInstance().flipBoard();
                 client = ChessClient.getInstance();
                 String ip = txtIP.getText();
                 int port = txtPort.getText().isEmpty() ? 0 : Integer.valueOf(txtPort.getText());
