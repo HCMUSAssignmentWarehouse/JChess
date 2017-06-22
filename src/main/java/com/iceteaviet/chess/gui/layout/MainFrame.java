@@ -106,7 +106,7 @@ public class MainFrame extends BaseFrame {
         hostMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                networkDialog = new NetworkDialog(MainFrame.this, true);
+                networkDialog = NetworkDialog.getInstance(MainFrame.this, true);
                 networkDialog.setVisible(true);
             }
         });
@@ -122,7 +122,7 @@ public class MainFrame extends BaseFrame {
         clientMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                networkDialog = new NetworkDialog(MainFrame.this, false);
+                networkDialog =  NetworkDialog.getInstance(MainFrame.this, false);
                 networkDialog.setVisible(true);
             }
         });

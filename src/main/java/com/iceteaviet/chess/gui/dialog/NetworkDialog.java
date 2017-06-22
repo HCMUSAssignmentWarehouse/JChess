@@ -30,6 +30,7 @@ public class NetworkDialog extends BaseDialog {
     JLabel lblIPInfo;
     JLabel lblPortInfo;
     private boolean isHost = false;
+    private static NetworkDialog mInstance = null;
 
     public NetworkDialog(JFrame parent, boolean isHost) {
         super(parent, false);
@@ -62,6 +63,17 @@ public class NetworkDialog extends BaseDialog {
                 super.windowClosing(e);
             }
         });
+    }
+
+    public static NetworkDialog getInstance(JFrame parent, boolean isHost) {
+        if (mInstance == null) {
+            mInstance = new NetworkDialog(parent, isHost);
+            return mInstance;
+        }
+
+        if (isHost != mInstance.isHost)
+            MessageBox.showError(string.error_server_client_same_time, string.chess_network_play);
+        return mInstance;
     }
 
     public void inflateHostLayout() {
@@ -191,9 +203,21 @@ public class NetworkDialog extends BaseDialog {
 
                 client.setIP(ip);
                 client.setServerPort(port);
+                client.setOnNetworkUpdateListener(new NetworkEndPoint.OnNetworkUpdateListener() {
+                    @Override
+                    public void onStatusUpdate(int statusCode, String statusMessage) {
+                        if (statusCode == NetworkEndPoint.STATUS_DISCONNECTED) {
+                            txtPort.setEditable(true);
+                            txtIP.setEditable(true);
+                            btnConnect.setEnabled(true);
+                        }
+                    }
+                });
+
                 client.start();
                 txtPort.setEditable(false);
                 txtIP.setEditable(false);
+                btnConnect.setEnabled(false);
             }
         });
     }

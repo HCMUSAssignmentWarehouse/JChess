@@ -21,4 +21,5 @@ public class string {
     public static final String cannot_read_resource = "Can't read input file";
     public static final String toolbar_server_title = "Finding chess opponent";
     public static final String about = "Version 0.1. Copyright © IceTeaViet";
+    public static final String error_server_client_same_time = "Cannot become server and client at the same time!";
 }

@@ -31,17 +31,25 @@ public final class ChessClient extends NetworkEndPoint {
     public void run() {
         super.run();
         try {
+            boolean connected = false;
             if (NetworkUtils.isValidIP(mIP)) {
                 if (NetworkUtils.isValidPort(serverPort))
-                    connectToServer(mIP, serverPort);
+                    connected = connectToServer(mIP, serverPort);
                 else
-                    connectToServer(mIP);
+                    connected = connectToServer(mIP);
             } else {
-                connectToServer(DEFAULT_IP);
+                connected = connectToServer(DEFAULT_IP);
             }
-            startChat(ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
-                    ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
-            startGame();
+
+            if (connected) {
+                startChat(ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
+                        ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
+                startGame();
+            }
+            else {
+                if (mListener != null)
+                    mListener.onStatusUpdate(STATUS_DISCONNECTED, "Cannot connect to Chess Server");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +85,7 @@ public final class ChessClient extends NetworkEndPoint {
 
             // check if the server is a ChessServer
             if (!netIn.readLine().equals("ChessServer HELLO")) {
-                System.out.println(netIn.readLine());
+                MessageBox.showError("Could not connect to " + ip, "Chess Client");
                 netIn.close();
                 netOut.close();
                 opponent.close();

@@ -82,15 +82,13 @@ public final class ChessServer extends NetworkEndPoint {
                 netOut.write("ChessServer HELLO\n");
                 netOut.flush();
 
-                System.out.println("hello server");
-
                 if (!netIn.readLine().equals("ChessClient HELLO")) {
                     System.out.println("close server");
                     netIn.close();
                     netOut.close();
                     opponent.close();
                 } else {
-                    System.out.println("break server");
+                    ss.close(); //Only accept 1 connection
                     break;
                 }
             }
