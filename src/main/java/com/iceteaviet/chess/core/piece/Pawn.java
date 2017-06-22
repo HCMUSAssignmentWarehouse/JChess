@@ -1,9 +1,9 @@
 package main.java.com.iceteaviet.chess.core.piece;
 
 import com.google.common.collect.ImmutableList;
-import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
 import main.java.com.iceteaviet.chess.core.board.GameBoard;
+import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Move;
 
 import java.util.ArrayList;

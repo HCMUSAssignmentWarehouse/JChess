@@ -87,7 +87,7 @@ public class RightMenuPanel extends JPanel {
                     pausedTimer.pause();
                     btnPause.setText("Resume Game");
                     try {
-                        ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "pause.png", 24, 24);
+                        ImageIcon icon = UIUtils.getScaledIconFromResources(this.getClass(), "play.png", 24, 24);
                         btnPause.setIcon(icon);
                     } catch (IOException ex) {
                         ex.printStackTrace();

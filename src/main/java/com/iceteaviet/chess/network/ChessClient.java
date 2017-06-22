@@ -45,8 +45,7 @@ public final class ChessClient extends NetworkEndPoint {
                 startChat(ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getHtmlPane(),
                         ChessGameWatcher.getInstance().getRightMenuPanel().getChatPanel().getTextField(), "Client");
                 startGame();
-            }
-            else {
+            } else {
                 if (mListener != null)
                     mListener.onStatusUpdate(STATUS_DISCONNECTED, "Cannot connect to Chess Server");
             }

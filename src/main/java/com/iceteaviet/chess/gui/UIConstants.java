@@ -7,7 +7,9 @@ import java.io.File;
  * Created by Genius Doan on 6/10/2017.
  */
 public class UIConstants {
-    public static final Dimension OUTER_FRAME_DIMENSION = new Dimension(900, 600);
+    public static final int DEFAULT_WIDTH = 900;
+    public static final int DEFAULT_HEIGHT = 600;
+    public static final Dimension OUTER_FRAME_DIMENSION = new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     public static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350);
     public static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     public static final Dimension LEFT_TAKEN_PIECES_PANEL_DIMENSION = new Dimension(100, 80);

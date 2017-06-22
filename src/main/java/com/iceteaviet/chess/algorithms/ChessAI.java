@@ -4,7 +4,7 @@ import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;

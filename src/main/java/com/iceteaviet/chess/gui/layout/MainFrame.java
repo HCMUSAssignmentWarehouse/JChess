@@ -122,7 +122,7 @@ public class MainFrame extends BaseFrame {
         clientMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                networkDialog =  NetworkDialog.getInstance(MainFrame.this, false);
+                networkDialog = NetworkDialog.getInstance(MainFrame.this, false);
                 networkDialog.setVisible(true);
             }
         });
@@ -217,10 +217,7 @@ public class MainFrame extends BaseFrame {
         gameRenewMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerW().stop();
-                ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerB().stop();
-                ChessGameWatcher.getInstance().updateGameBoard(GameBoard.createStandardBoard());
-                ChessGameWatcher.getInstance().show();
+                ChessGameWatcher.getInstance().renewGame();
             }
 
         });

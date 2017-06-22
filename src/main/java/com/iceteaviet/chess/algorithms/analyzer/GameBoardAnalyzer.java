@@ -1,4 +1,4 @@
-package main.java.com.iceteaviet.chess.algorithms;
+package main.java.com.iceteaviet.chess.algorithms.analyzer;
 
 import main.java.com.iceteaviet.chess.core.board.GameBoard;
 

@@ -1,4 +1,4 @@
-package main.res.values;
+package main.java.com.iceteaviet.chess.properties.values;
 
 /**
  * Created by Genius Doan on 6/20/2017.

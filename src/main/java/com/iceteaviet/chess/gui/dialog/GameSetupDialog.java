@@ -8,10 +8,12 @@ import main.java.com.iceteaviet.chess.algorithms.ChessAI;
 import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.player.Player;
 import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
+import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,12 +21,14 @@ import java.awt.event.ActionListener;
 
 public class GameSetupDialog extends BaseDialog {
     private ChessGameWatcher.PlayerType whitePlayerType = ChessGameWatcher.PlayerType.HUMAN;
-    private ChessGameWatcher.PlayerType blackPlayerType = ChessGameWatcher.PlayerType.COMPUTER;
+    private ChessGameWatcher.PlayerType blackPlayerType = ChessGameWatcher.PlayerType.COMPUTER; //Default black player is AI
     private JSpinner searchDepthSpinner;
     private JRadioButton btnAlphaBeta;
 
     public GameSetupDialog(MainFrame frame, boolean modal) {
         super(frame, modal);
+        setLocationRelativeTo(null);
+        setLocation(UIConstants.DEFAULT_WIDTH, 0);
         setTitle(string.game_setup_dialog_title);
         final JPanel myPanel = new JPanel(new GridLayout(0, 1));
         final JRadioButton whiteHumanButton = new JRadioButton(string.human_label);
@@ -35,12 +39,19 @@ public class GameSetupDialog extends BaseDialog {
         final ButtonGroup whiteGroup = new ButtonGroup();
         whiteGroup.add(whiteHumanButton);
         whiteGroup.add(whiteComputerButton);
-        whiteHumanButton.setSelected(true);
+        if (whitePlayerType == ChessGameWatcher.PlayerType.HUMAN)
+            whiteHumanButton.setSelected(true);
+        else
+            whiteComputerButton.setSelected(true);
 
         final ButtonGroup blackGroup = new ButtonGroup();
         blackGroup.add(blackHumanButton);
         blackGroup.add(blackComputerButton);
-        blackComputerButton.setSelected(true); //Default black player is AI
+        blackComputerButton.setSelected(true);
+        if (blackPlayerType == ChessGameWatcher.PlayerType.HUMAN)
+            blackHumanButton.setSelected(true);
+        else
+            blackComputerButton.setSelected(true);
 
         btnAlphaBeta = new JRadioButton(string.alpha_beta_name);
         btnAlphaBeta.setSelected(true);
@@ -50,14 +61,34 @@ public class GameSetupDialog extends BaseDialog {
         algorithmGroup.add(btnMiniMax);
 
         getContentPane().add(myPanel);
-        myPanel.add(new JLabel(string.player_white));
+
+        JLabel lblWhite = new JLabel(string.player_white);
+        lblWhite.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        lblWhite.setForeground(Color.WHITE);
+        lblWhite.setOpaque(true);
+        lblWhite.setHorizontalAlignment(SwingConstants.CENTER);
+        lblWhite.setBorder(new EmptyBorder(8,0,8,0));
+        myPanel.add(lblWhite);
         myPanel.add(whiteHumanButton);
         myPanel.add(whiteComputerButton);
-        myPanel.add(new JLabel(string.player_black));
+
+        JLabel lblBlack = new JLabel(string.player_black);
+        lblBlack.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        lblBlack.setForeground(Color.WHITE);
+        lblBlack.setOpaque(true);
+        lblBlack.setHorizontalAlignment(SwingConstants.CENTER);
+        lblBlack.setBorder(new EmptyBorder(8,0,8,0));
+        myPanel.add(lblBlack);
         myPanel.add(blackHumanButton);
         myPanel.add(blackComputerButton);
 
-        myPanel.add(new JLabel("Search"));
+        JLabel lblSearch = new JLabel("Search");
+        lblSearch.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        lblSearch.setForeground(Color.WHITE);
+        lblSearch.setOpaque(true);
+        lblSearch.setHorizontalAlignment(SwingConstants.CENTER);
+        lblSearch.setBorder(new EmptyBorder(8,0,8,0));
+        myPanel.add(lblSearch);
         myPanel.add(btnAlphaBeta);
         myPanel.add(btnMiniMax);
         this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(4, 0, Integer.MAX_VALUE, 1));
@@ -89,10 +120,15 @@ public class GameSetupDialog extends BaseDialog {
     }
 
     private static JSpinner addLabeledSpinner(Container c, String label, SpinnerModel model) {
-        final JLabel l = new JLabel(label);
-        c.add(l);
+        final JLabel lblSpinner = new JLabel(label);
+        lblSpinner.setBackground(UIConstants.PRIMARY_BG_COLOR);
+        lblSpinner.setForeground(Color.WHITE);
+        lblSpinner.setOpaque(true);
+        lblSpinner.setHorizontalAlignment(SwingConstants.CENTER);
+        lblSpinner.setBorder(new EmptyBorder(8,0,8,0));
+        c.add(lblSpinner);
         final JSpinner spinner = new JSpinner(model);
-        l.setLabelFor(spinner);
+        lblSpinner.setLabelFor(spinner);
         c.add(spinner);
         return spinner;
     }
@@ -115,6 +151,14 @@ public class GameSetupDialog extends BaseDialog {
 
     public ChessGameWatcher.PlayerType getBlackPlayerType() {
         return this.blackPlayerType;
+    }
+
+    public void setWhitePlayerType(ChessGameWatcher.PlayerType whitePlayerType) {
+        this.whitePlayerType = whitePlayerType;
+    }
+
+    public void setBlackPlayerType(ChessGameWatcher.PlayerType blackPlayerType) {
+        this.blackPlayerType = blackPlayerType;
     }
 
     public int getSearchDepth() {

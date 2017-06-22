@@ -4,7 +4,7 @@ import main.java.com.iceteaviet.chess.core.player.Alliance;
 
 /**
  * Constants is an interface consisting of useful values.
- *
+ * <p>
  * Created by Genius Doan on 6/13/2017.
  */
 public interface Constants {

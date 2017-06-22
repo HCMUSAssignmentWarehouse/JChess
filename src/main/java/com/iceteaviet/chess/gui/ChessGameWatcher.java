@@ -17,7 +17,7 @@ import main.java.com.iceteaviet.chess.gui.layout.MainFrame;
 import main.java.com.iceteaviet.chess.gui.layout.RightMenuPanel;
 import main.java.com.iceteaviet.chess.gui.layout.TakenPiecesPanel;
 import main.java.com.iceteaviet.chess.network.NetworkManager;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.swing.*;
 import java.awt.*;
@@ -210,6 +210,13 @@ public class ChessGameWatcher extends Observable {
                 boardPanel.drawBoard(chessBoard);
             }
         });
+    }
+
+    public void renewGame() {
+        ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerW().stop();
+        ChessGameWatcher.getInstance().getRightMenuPanel().getChronometerB().stop();
+        ChessGameWatcher.getInstance().updateGameBoard(GameBoard.createStandardBoard());
+        ChessGameWatcher.getInstance().show();
     }
 
     public enum PlayerType {
@@ -458,7 +465,7 @@ public class ChessGameWatcher extends Observable {
                 for (final Move move : pieceLegalMoves(gameBoard)) {
                     if (move.getDestinationCoordinate() == this.tileId) {
                         try {
-                            add(new JLabel(UIUtils.getIconFromResources(this.getClass(), "green_dot.png")));
+                            add(new JLabel(UIUtils.getScaledIconFromResources(this.getClass(), "green-dot.png", 16, 16)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

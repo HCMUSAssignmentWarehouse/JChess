@@ -1,7 +1,7 @@
 package main.java.com.iceteaviet.chess.gui;
 
 import main.java.com.iceteaviet.chess.gui.dialog.MessageBox;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

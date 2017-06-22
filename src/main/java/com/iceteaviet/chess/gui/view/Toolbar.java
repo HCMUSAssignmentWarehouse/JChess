@@ -3,7 +3,7 @@ package main.java.com.iceteaviet.chess.gui.view;
 import main.java.com.iceteaviet.chess.gui.OnClickListener;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

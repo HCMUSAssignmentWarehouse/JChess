@@ -1,9 +1,6 @@
 package main.java.com.iceteaviet.chess.core.player;
 
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
-import main.java.com.iceteaviet.chess.core.player.BlackPlayer;
-import main.java.com.iceteaviet.chess.core.player.Player;
-import main.java.com.iceteaviet.chess.core.player.WhitePlayer;
 
 /**
  * Created by MyPC on 5/9/2017.

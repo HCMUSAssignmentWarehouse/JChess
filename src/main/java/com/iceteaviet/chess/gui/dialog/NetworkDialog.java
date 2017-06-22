@@ -4,7 +4,7 @@ import main.java.com.iceteaviet.chess.gui.ChessGameWatcher;
 import main.java.com.iceteaviet.chess.gui.UIConstants;
 import main.java.com.iceteaviet.chess.gui.UIUtils;
 import main.java.com.iceteaviet.chess.network.*;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
  * Created by Genius Doan on 6/16/2017.
  */
 public class NetworkDialog extends BaseDialog {
+    private static NetworkDialog mInstance = null;
     ChessServer server;
     ChessClient client;
     JTextField txtIP;
@@ -30,16 +31,20 @@ public class NetworkDialog extends BaseDialog {
     JLabel lblIPInfo;
     JLabel lblPortInfo;
     private boolean isHost = false;
-    private static NetworkDialog mInstance = null;
+    private boolean isBoardFlipped = false;
 
     public NetworkDialog(JFrame parent, boolean isHost) {
         super(parent, false);
         this.width = 440;
         this.height = 240;
         setLocationRelativeTo(null);
-        setLocation(900, 0);
+        setLocation(UIConstants.DEFAULT_WIDTH, 0);
         setSize(new Dimension(width, height));
         this.isHost = isHost;
+
+        ChessGameWatcher.getInstance().renewGame();
+        ChessGameWatcher.getInstance().getGameSetupDialog().setBlackPlayerType(ChessGameWatcher.PlayerType.HUMAN);
+        ChessGameWatcher.getInstance().getGameSetupDialog().setWhitePlayerType(ChessGameWatcher.PlayerType.HUMAN);
         ChessGameWatcher.getInstance().setNetPlay(true);
         NetworkManager.getInstance().setIsHost(isHost);
         setResizable(false);
@@ -53,13 +58,19 @@ public class NetworkDialog extends BaseDialog {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                NetworkManager.getInstance().sendEndMessages();
+                if (NetworkManager.getInstance().isConnected())
+                    NetworkManager.getInstance().sendEndMessages();
+                else
+                    NetworkManager.getInstance().closeConnection();
+
+                //TODO: Stop thread of server/client
+
                 ChessGameWatcher.getInstance().setNetPlay(false);
 
-                if (!isHost) {
+                if (!isHost && isBoardFlipped) {
                     ChessGameWatcher.getInstance().flipBoard();
                 }
-
+                mInstance = null;
                 super.windowClosing(e);
             }
         });
@@ -180,7 +191,8 @@ public class NetworkDialog extends BaseDialog {
                     lblLoad.setText(statusMessage);
             }
         });
-        server.start();
+        if (!server.isAlive())
+            server.start();
     }
 
     public void setupClient() {
@@ -188,6 +200,7 @@ public class NetworkDialog extends BaseDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ChessGameWatcher.getInstance().flipBoard();
+                isBoardFlipped = true;
                 client = ChessClient.getInstance();
                 String ip = txtIP.getText();
                 int port = txtPort.getText().isEmpty() ? 0 : Integer.valueOf(txtPort.getText());
@@ -214,7 +227,8 @@ public class NetworkDialog extends BaseDialog {
                     }
                 });
 
-                client.start();
+                if (!client.isAlive())
+                    client.start();
                 txtPort.setEditable(false);
                 txtIP.setEditable(false);
                 btnConnect.setEnabled(false);

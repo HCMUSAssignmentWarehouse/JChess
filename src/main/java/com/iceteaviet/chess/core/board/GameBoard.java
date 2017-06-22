@@ -2,20 +2,16 @@ package main.java.com.iceteaviet.chess.core.board;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import main.java.com.iceteaviet.chess.core.player.Alliance;
 import main.java.com.iceteaviet.chess.core.Constants;
 import main.java.com.iceteaviet.chess.core.piece.*;
-import main.java.com.iceteaviet.chess.core.player.BlackPlayer;
-import main.java.com.iceteaviet.chess.core.player.Move;
-import main.java.com.iceteaviet.chess.core.player.Player;
-import main.java.com.iceteaviet.chess.core.player.WhitePlayer;
+import main.java.com.iceteaviet.chess.core.player.*;
 
 import java.util.*;
 
 /**
  * GameBoard is the main game gameBoard of Arthur Chess
  * It is simply a chess board layout containing all piece positions
- *
+ * <p>
  * Created by MyPC on 5/9/2017.
  */
 

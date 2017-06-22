@@ -1,4 +1,4 @@
-package main.java.com.iceteaviet.chess.algorithms;
+package main.java.com.iceteaviet.chess.algorithms.analyzer;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;

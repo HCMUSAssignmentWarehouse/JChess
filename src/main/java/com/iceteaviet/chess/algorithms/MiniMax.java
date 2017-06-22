@@ -1,10 +1,12 @@
 package main.java.com.iceteaviet.chess.algorithms;
 
+import main.java.com.iceteaviet.chess.algorithms.analyzer.ArthurBoardAnalyzer;
+import main.java.com.iceteaviet.chess.algorithms.analyzer.GameBoardAnalyzer;
 import main.java.com.iceteaviet.chess.core.board.BoardUtils;
 import main.java.com.iceteaviet.chess.core.board.GameBoard;
 import main.java.com.iceteaviet.chess.core.player.Move;
 import main.java.com.iceteaviet.chess.core.player.MoveTransition;
-import main.res.values.string;
+import main.java.com.iceteaviet.chess.properties.values.string;
 
 import java.util.concurrent.atomic.AtomicLong;
 
