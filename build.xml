@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="chess" basedir="." default="all">
-  
-  
+
+
   <property file="chess-build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
    -->
-  
+
   <!-- Compiler options -->
-  
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -51,88 +51,88 @@
     <exclude name="**/?*.clj"/>
     <exclude name="**/?*.aj"/>
   </patternset>
-  
-  
+
+
   <!-- Project Libraries -->
-  
-  
+
+
   <!-- Application Server Libraries -->
-  
+
   <!-- Modules -->
-  
-  
+
+
   <!-- Module Chess -->
-  
+
   <dirname property="module.chess.basedir" file="${ant.file}"/>
-  
+
   <property name="main-class"  value="main.java.com.iceteaviet.chess.JChess"/>
   <property name="src.dir"     value="src"/>
 
   <property name="compiler.args.chess" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
-  
+
   <property name="chess.output.dir" value="${module.chess.basedir}/out/production/Chess"/>
   <property name="chess.testoutput.dir" value="${module.chess.basedir}/out/test/Chess"/>
 
-  
+
   <path id="chess.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
-  
+
   <path id="chess.module.production.classpath">
     <pathelement location="${basedir}/libs/guava-19.0.jar"/>
   </path>
-  
+
   <path id="chess.runtime.production.module.classpath">
     <pathelement location="${chess.output.dir}"/>
     <pathelement location="${basedir}/libs/guava-19.0.jar"/>
   </path>
-  
+
   <path id="chess.module.classpath">
     <pathelement location="${chess.output.dir}"/>
     <pathelement location="${basedir}/libs/guava-19.0.jar"/>
   </path>
-  
+
   <path id="chess.runtime.module.classpath">
     <pathelement location="${chess.testoutput.dir}"/>
     <pathelement location="${chess.output.dir}"/>
     <pathelement location="${basedir}/libs/guava-19.0.jar"/>
   </path>
-  
-  
+
+
   <patternset id="excluded.from.module.chess">
     <patternset refid="ignored.files"/>
   </patternset>
-  
+
   <patternset id="excluded.from.compilation.chess">
     <patternset refid="excluded.from.module.chess"/>
   </patternset>
-  
+
   <path id="chess.module.sourcepath">
     <dirset dir="${module.chess.basedir}">
       <include name="src"/>
       <include name="src/main/res"/>
     </dirset>
   </path>
-  
+
   <path id="chess.module.test.sourcepath">
     <dirset dir="${module.chess.basedir}">
       <include name="src/test"/>
     </dirset>
   </path>
-  
-  
+
+
   <target name="compile.module.chess" depends="compile.module.chess.production,compile.module.chess.tests" description="Compile module Chess"/>
-  
+
   <target name="compile.module.chess.production" description="Compile module Chess; production classes">
     <mkdir dir="${chess.output.dir}"/>
-    <javac destdir="${chess.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${chess.output.dir}" debug="${compiler.debug}" includeantruntime="false" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.chess}"/>
       <bootclasspath refid="chess.module.bootclasspath"/>
       <classpath refid="chess.module.production.classpath"/>
       <src refid="chess.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.chess"/>
     </javac>
-    
+
     <copy todir="${chess.output.dir}">
       <fileset dir="${module.chess.basedir}/src">
         <patternset refid="compiler.resources"/>
@@ -144,17 +144,17 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="compile.module.chess.tests" depends="compile.module.chess.production" description="compile module Chess; test classes" unless="skip.tests">
     <mkdir dir="${chess.testoutput.dir}"/>
-    <javac destdir="${chess.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac destdir="${chess.testoutput.dir}" debug="${compiler.debug}" includeantruntime="false" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.chess}"/>
       <bootclasspath refid="chess.module.bootclasspath"/>
       <classpath refid="chess.module.classpath"/>
       <src refid="chess.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.chess"/>
     </javac>
-    
+
     <copy todir="${chess.testoutput.dir}">
       <fileset dir="${module.chess.basedir}/src/test">
         <patternset refid="compiler.resources"/>
@@ -162,27 +162,27 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="clean.module.chess" description="cleanup module">
     <delete dir="${chess.output.dir}"/>
     <delete dir="${chess.testoutput.dir}"/>
   </target>
-  
+
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
-  
+
   <target name="clean" depends="clean.module.chess" description="cleanup all"/>
-  
+
   <target name="build.modules" depends="init, clean, compile.module.chess" description="build all modules"/>
-  
+
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
     <property name="artifact.output.chess:jar" value="${basedir}/out/artifacts/Chess_jar"/>
     <mkdir dir="${artifacts.temp.dir}"/>
     <property name="temp.jar.path.Chess.jar" value="${artifacts.temp.dir}/Chess.jar"/>
   </target>
-  
+
   <target name="artifact.chess:jar" depends="init.artifacts, compile.module.chess" description="Build &#39;Chess:jar&#39; artifact">
     <property name="artifact.temp.output.chess:jar" value="${artifacts.temp.dir}/Chess_jar"/>
     <mkdir dir="${artifact.temp.output.chess:jar}"/>
@@ -199,16 +199,16 @@
   <target name="run" depends="artifact.chess:jar">
     <java jar="${artifact.temp.output.chess:jar}/${ant.project.name}.jar" fork="true"/>
   </target>
-  
+
   <target name="build.all.artifacts" depends="artifact.chess:jar" description="Build all artifacts">
     <mkdir dir="${artifact.output.chess:jar}"/>
     <copy todir="${artifact.output.chess:jar}">
       <fileset dir="${artifact.temp.output.chess:jar}"/>
     </copy>
-    
+
     <!-- Delete temporary files -->
     <delete dir="${artifacts.temp.dir}"/>
   </target>
-  
+
   <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>

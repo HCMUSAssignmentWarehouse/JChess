@@ -15,7 +15,7 @@ public class UIConstants {
     public static final Dimension LEFT_TAKEN_PIECES_PANEL_DIMENSION = new Dimension(100, 80);
     public static final Dimension RIGHT_GAME_PANEL_DIMENSION = new Dimension(200, 400);
     public static final String CHESS_DRAWABLE_EXTENSION = ".png";
-    public static final String DEFAULT_ICON_RESOURCE_PATH = "drawable/";
+    public static final String DEFAULT_ICON_RESOURCE_PATH = "main/res/drawable/";
     public static final int DEFAULT_PIECE_ICON_SIZE = 56;
     public static final Color PRIMARY_COLOR = Color.decode("#ff9800");
     public static final Color PRIMARY_COLOR_DARK = Color.decode("#ef6c00");
