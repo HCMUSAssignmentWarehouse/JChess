@@ -30,6 +30,8 @@ The **advance** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/KleUFJU1mj4/0.jpg)](https://www.youtube.com/watch?v=KleUFJU1mj4)
+
 ## Notes
 
 Althought this project is under Apache License, This is still our final project at school.
